@@ -12,7 +12,7 @@
 #'
 #' @section Accessing the data
 #'
-#' To access CODE data, call \code{/link{get_crime_data}}. Data are returned as
+#' To access CODE data, call \code{\link{get_crime_data}}. Data are returned as
 #' a 'tidy' tibble with each row corresponding to one recorded crime.
 #'
 #' @docType package
@@ -20,6 +20,6 @@
 NULL
 
 ## quiets concerns of R CMD check re: the .'s that appear in pipelines
-# idea from:
+# code from:
 # https://github.com/STAT545-UBC/Discussion/issues/451#issuecomment-264598618
 if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))

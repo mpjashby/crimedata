@@ -3,8 +3,6 @@
 #' URLs are either obtained from the OSF API or, if a cached version exists,
 #' from the cache.
 #'
-#' @export
-#'
 #' @import digest
 get_file_urls <- function () {
 
@@ -45,7 +43,6 @@ get_file_urls <- function () {
 #' together with the type of data in the file and the year the data is for.
 #'
 #' @return a tibble with three columns: type, year and file_url
-#' @export
 #'
 #' @import httr
 #' @import tibble
