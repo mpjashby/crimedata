@@ -1,12 +1,12 @@
 Package: crimedata
-Title: Access crime data from the Open Crime Database
+Title: Access Crime Data from the Open Crime Database
 Version: 0.0.0.9000
 Authors@R: person("Matthew", "Ashby", email = "matthew.ashby@ntu.ac.uk", 
     role = c("aut", "cre"))
 Description: Gives convenient access to publicly available police-recorded open
     crime data from large cities in the United States that are included in the
     Open Crime Database <https://osf.io/zyaqn/>.
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.2.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -18,4 +18,7 @@ Imports: digest,
     purrr,
     readr,
     stringr,
-    tibble
+    tibble,
+    dplyr
+URL: https://github.com/mpjashby/crimedata
+BugReports: https://github.com/mpjashby/crimedata/issues

@@ -31,6 +31,7 @@
 #' get_crime_data(years = 2011:2015, type = "sample")
 #'
 #' @import digest
+#' @import dplyr
 #' @import readr
 #' @import purrr
 get_crime_data <- function (years = NULL, type = "sample", cache = TRUE) {

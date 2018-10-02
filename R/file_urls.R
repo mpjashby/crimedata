@@ -44,6 +44,7 @@ get_file_urls <- function () {
 #'
 #' @return a tibble with three columns: type, year and file_url
 #'
+#' @import dplyr
 #' @import httr
 #' @import tibble
 #' @import purrr
