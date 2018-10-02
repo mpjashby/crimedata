@@ -5,8 +5,8 @@ cities using the [Open Crime Database](https://osf.io/zyaqn/) (CODE), a service
 that releases these data in a convenient format for analysis. All the data are 
 available to use for free as long as you acknowledge the source of the data.
 
-The function get_crime_data() returns a [tidy](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html) 
-data [tibble](https://cran.r-project.org/web/packages/tibble/vignettes/tibble.html)
+The function `get_crime_data()` returns a [tidy](https://CRAN.R-project.org/package=tidyr) 
+data [tibble](https://CRAN.R-project.org/package=tibble)
 of crime data with each row representing a single crime. The data provided for
 each offense includes the offense type, approximate offense location and 
 date/time. More fields are available for some records, depending on what data
@@ -38,7 +38,7 @@ library(crimedata)
 crime_data <- get_crime_data(years = 2007:2010)
 ```
 
-The data are in a tidy format, so can be quickly manipulated using [dplyr]()
+The data are in a tidy format, so can be quickly manipulated using [dplyr](https://CRAN.R-project.org/package=dplyr)
 verbs. For example, to analyse only personal robberies in Chicago, you can:
 
 ``` r
