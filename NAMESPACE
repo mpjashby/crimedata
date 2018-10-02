@@ -3,6 +3,7 @@
 export("%>%")
 export(get_crime_data)
 import(digest)
+import(dplyr)
 import(httr)
 import(purrr)
 import(readr)
