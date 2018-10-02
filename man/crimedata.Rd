@@ -4,7 +4,24 @@
 \name{crimedata}
 \alias{crimedata}
 \alias{crimedata-package}
-\title{\code{crimedata} package}
+\title{crimedata: a package for accessing US city crime data}
 \description{
-Access crime data from the Open Crime Database
+Access incident-level crime data from the Open Crime Database
 }
+\section{Crime Open Database}{
+
+
+The Crime Open Database (CODE) is a service that makes it convenient to use
+crime data from multiple US cities in research on crime. All the data are
+available to use for free as long as you acknowledge the source of the data.
+
+For more about CODE data, see \url{https://osf.io/zyaqn/}.
+}
+
+\section{Accessing the data}{
+
+
+To access CODE data, call \code{\link{get_crime_data}}. Data are returned as
+a 'tidy' tibble with each row corresponding to one recorded crime.
+}
+

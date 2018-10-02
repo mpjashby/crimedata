@@ -1,8 +1,8 @@
-#' \code{crimedata} package
+#' crimedata: a package for accessing US city crime data
 #'
-#' Access crime data from the Open Crime Database
+#' Access incident-level crime data from the Open Crime Database
 #'
-#' @section The Crime Open Database
+#' @section Crime Open Database:
 #'
 #' The Crime Open Database (CODE) is a service that makes it convenient to use
 #' crime data from multiple US cities in research on crime. All the data are
@@ -10,7 +10,7 @@
 #'
 #' For more about CODE data, see \url{https://osf.io/zyaqn/}.
 #'
-#' @section Accessing the data
+#' @section Accessing the data:
 #'
 #' To access CODE data, call \code{\link{get_crime_data}}. Data are returned as
 #' a 'tidy' tibble with each row corresponding to one recorded crime.

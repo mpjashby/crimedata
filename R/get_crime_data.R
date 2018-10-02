@@ -82,11 +82,11 @@ get_crime_data <- function (years = NULL, type = "sample", cache = TRUE) {
   # check if requested data are available in cache
   if (cache == TRUE & length(cache_files) > 0) {
 
-    crime_data <- readRDS(cache_files[1])
-
     message("Returning cached data from previous request in this session. To ",
             "refresh data, call get_crime_data() with cache = FALSE.",
             appendLF = TRUE)
+
+    crime_data <- readRDS(cache_files[1])
 
   } else {
 
@@ -98,16 +98,20 @@ get_crime_data <- function (years = NULL, type = "sample", cache = TRUE) {
       purrr::map(function (x) {
 
         # report progress
-        message("Reading ", x[["type"]], " data for ", x[["year"]], " from ",
+        message("Downloading ", x[["type"]], " data for ", x[["year"]], " from ",
                 x[["file_url"]], appendLF = TRUE)
 
         # set name for temporary file
         temp_file <- tempfile(pattern = "code_data_", fileext = ".csv.gz")
 
         # download remote file
-        httr::GET(x[["file_url"]]) %>%
+        httr::GET(x[["file_url"]], progress(type = "down")) %>%
           httr::content(as = "raw") %>%
           writeBin(temp_file)
+
+        # report progress
+        message("Reading ", x[["type"]], " data for ", x[["year"]], " into R",
+                appendLF = TRUE)
 
         # read file
         this_crime_data <- readr::read_csv(
