@@ -28,6 +28,7 @@ You can install crimedata from github with:
 devtools::install_github("mpjashby/crimedata")
 ```
 
+
 ## Examples
 
 Data can be downloaded by year. By default (i.e. if the `type` argument is not
@@ -48,3 +49,12 @@ chicago_robberies <- get_crime_data(years = 2009, type = "core") %>%
   filter(city_name == "Chicago", offense_type == "personal robbery")
 
 ```
+
+
+## Included data
+
+The package includes two datasets. `homicides15` contains records of 1,922 
+recorded homicides in nine US cities in 2015. `nycvehiclethefts` contains 
+records of 35,746 thefts of motor vehicles in New York City from 2014 to 2017.
+These may be particularly useful for teaching purposes.
+
