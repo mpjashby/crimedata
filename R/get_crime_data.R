@@ -82,8 +82,8 @@ get_crime_data <- function (years = NULL, type = "sample", cache = TRUE) {
   # check if requested data are available in cache
   if (cache == TRUE & length(cache_files) > 0) {
 
-    message("Returning cached data from previous request in this session. To ",
-            "refresh data, call get_crime_data() with cache = FALSE.",
+    message("Loading cached data from previous request in this session. To ",
+            "download data again, call get_crime_data() with cache = FALSE.",
             appendLF = TRUE)
 
     crime_data <- readRDS(cache_files[1])
