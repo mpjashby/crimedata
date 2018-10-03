@@ -30,7 +30,8 @@ devtools::install_github("mpjashby/crimedata")
 
 ## Examples
 
-Data can be downloaded by year:
+Data can be downloaded by year. By default (i.e. if the `type` argument is not
+specified) a 1% sample of the available data are returned.
 
 ``` r
 library(crimedata)
@@ -43,7 +44,7 @@ verbs. For example, to analyse only personal robberies in Chicago, you can:
 
 ``` r
 
-chicago_robberies <- get_crime_data(years = 2009) %>% 
+chicago_robberies <- get_crime_data(years = 2009, type = "core") %>% 
   filter(city_name == "Chicago", offense_type == "personal robbery")
 
 ```
