@@ -3,8 +3,11 @@
 #' URLs are either obtained from the OSF API or, if a cached version exists,
 #' from the cache.
 #'
+#' @param quiet Should messages and warnings relating to data availability be
+#'   suppressed?
+#'
 #' @import digest
-get_file_urls <- function () {
+get_file_urls <- function (quiet = FALSE) {
 
   # set path for cache file
   cache_file <- paste0(tempdir(), "/crimedata_urls_",
@@ -19,10 +22,17 @@ get_file_urls <- function () {
     # get URLs from cache
     urls <- readRDS(cache_file)
 
-    message("Using cached URLs to get data from server. These URLs rarely ",
-            "change and this is almost certainly safe.", appendLF = TRUE)
+    if (quiet == FALSE) {
+      message("Using cached URLs to get data from server. These URLs rarely ",
+              "change and this is almost certainly safe.", appendLF = TRUE)
+    }
 
   } else {
+
+    if (quiet == FALSE) {
+      message("Downloading list of URLs for data files. This takes a few ",
+              "seconds but is only done once per session.", appendLF = TRUE)
+    }
 
     # get URLs from server
     urls <- fetch_file_urls()
@@ -57,7 +67,7 @@ fetch_file_urls <- function () {
 
   # specify the URL of the API end point
   page_url <- paste0("https://api.osf.io/v2/nodes/zyaqn/files/osfstorage/",
-                     "5b2ceceed65eaa0011d95f95/?format=json")
+                     "5bbde32b7cb18100193c778a/?format=json")
 
   # fetch paginated results until there are none left, at which point page_url
   # will be NULL
@@ -73,13 +83,30 @@ fetch_file_urls <- function () {
     result <- purrr::map_df(json$data, function (x) {
 
       # parse the file name into type and year
-      file_name <- stringr::str_split(x$attributes$name, "\\.",
-                                      simplify = TRUE) %>%
-        purrr::pluck(1) %>% stringr::str_split("_", simplify = TRUE)
+      # file_name <- stringr::str_split(x$attributes$name, "\\.",
+      #                                 simplify = TRUE) %>%
+      #   purrr::pluck(1) %>%
+      #   stringr::str_split("_", simplify = TRUE)
+      file_name <- stringr::str_match(
+        x$attributes$name,
+        paste0("^crime_open_database_(core|extended|sample)_(.+)_(\\d+).Rds$")
+      ) %>%
+        as.character()
+
+      # extract city_name
+      city_name <- stringr::str_to_title(stringr::str_replace_all(file_name[3],
+                                                                  "_", " "))
+      if (city_name == "All") {
+        city_name <- "all cities"
+      }
 
       # return a list of data for this file
-      list(type = file_name[4], year = file_name[5],
-           file_url = x$links$download)
+      list(
+        data_type = file_name[2],
+        city = city_name,
+        year = file_name[4],
+        file_url = x$links$download
+      )
 
     })
 
@@ -95,6 +122,31 @@ fetch_file_urls <- function () {
   values$year <- as.integer(values$year)
 
   # return tibble of links
-  values
+  dplyr::arrange(values, .data$data_type, .data$city, .data$year)
+
+}
+
+
+#' List Data Available in the Open Crime Database
+#'
+#' Get a tibble showing what years of crime data are available from which cities
+#' in the Open Crime Database.
+#'
+#' @param quiet Should messages and warnings relating to data availability and
+#'   processing be suppressed?
+#'
+#' @return A tibble
+#'
+#' @export
+#'
+#' @import dplyr
+list_crime_data <- function (quiet = FALSE) {
+
+  get_file_urls(quiet = quiet) %>%
+    dplyr::group_by(.data$city) %>%
+    dplyr::summarise(year_min = min(.data$year),
+                     year_max = max(.data$year)) %>%
+    dplyr::mutate(years = paste(.data$year_min, "to", .data$year_max)) %>%
+    dplyr::select(.data$city, .data$years)
 
 }

@@ -2,19 +2,27 @@
 % Please edit documentation in R/get_crime_data.R
 \name{get_crime_data}
 \alias{get_crime_data}
-\title{Get data from the Open Crime Database}
+\title{Get Data from the Open Crime Database}
 \usage{
-get_crime_data(years = NULL, type = "sample", cache = TRUE)
+get_crime_data(years = NULL, cities = NULL, type = "sample",
+  cache = TRUE, quiet = FALSE)
 }
 \arguments{
-\item{years}{A single number or vector of numbers specifying the years for
-which data should be retrieved. If NULL (the default), data for all
-available years will be returned.}
+\item{years}{A single integer or vector of integers specifying the years for
+which data should be retrieved. If NULL (the default), data for the most
+recent year will be returned.}
+
+\item{cities}{A character vector of city names for which data should be
+retrieved. If NULL (the default), data for all available cities will be
+returned.}
 
 \item{type}{Either "sample" (the default), "core" or "extended".}
 
 \item{cache}{Should the result be cached and then re-used if the function is
 called again with the same arguments?}
+
+\item{quiet}{Should messages and warnings relating to data availability and
+processing be suppressed?}
 }
 \value{
 A tibble containing data from the Open Crime Database.
@@ -33,9 +41,9 @@ provided by the police department in each city. The extended data fields have
 not been harmonized across cities, so will require further cleaning before
 most types of analysis.
 
-Compressed data files are approximately 40MB per year for the core data and
-70MB per year for the extended data, so consider requesting fewer years of
-data (or use type = "sample") for exploratory analysis.
+Requesting all data may lead to problems with memory capacity. Consider
+downloading smaller quantities of data (e.g. using type = "sample") for
+exploratory analysis.
 }
 \examples{
 # Retrieve data for specific years

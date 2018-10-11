@@ -4,7 +4,11 @@
 \alias{get_file_urls}
 \title{Get URLs for Open Crime Database files}
 \usage{
-get_file_urls()
+get_file_urls(quiet = FALSE)
+}
+\arguments{
+\item{quiet}{Should messages and warnings relating to data availability be
+suppressed?}
 }
 \description{
 URLs are either obtained from the OSF API or, if a cached version exists,

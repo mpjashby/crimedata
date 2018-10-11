@@ -5,8 +5,8 @@ test_that("return value of get_file_urls is a tibble", {
 })
 
 test_that("type column of return value contains only valid values", {
-  expect_is(get_file_urls()[["type"]], "character")
-  expect_match(get_file_urls()[["type"]], "(core|extended|sample)")
+  expect_is(get_file_urls()[["data_type"]], "character")
+  expect_match(get_file_urls()[["data_type"]], "(core|extended|sample)")
 })
 
 test_that("year column of return value contains only valid integer years", {
@@ -20,3 +20,8 @@ test_that("file_url column of return value contains only URLs", {
   expect_is(get_file_urls()[["file_url"]], "character")
   expect_match(get_file_urls()[["file_url"]], "^http")
 })
+
+test_that("return value of list_crime_data is a tibble", {
+  expect_is(list_crime_data(), "tbl_df")
+})
+
