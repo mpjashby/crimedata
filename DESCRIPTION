@@ -1,6 +1,6 @@
 Package: crimedata
 Title: Access Crime Data from the Open Crime Database
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: person("Matthew", "Ashby", email = "matthew.ashby@ntu.ac.uk", 
     role = c("aut", "cre"), 
     comment = c(ORCID = "https://orcid.org/0000-0003-4201-9239"))
