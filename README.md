@@ -1,5 +1,7 @@
 # crimedata
 
+[![Travis-CI Build Status](https://travis-ci.org/mpjashby/crimedata.svg?branch=master)](https://travis-ci.org/mpjashby/crimedata) [![Coverage Status](https://img.shields.io/codecov/c/github/mpjashby/crimedata/master.svg)](https://codecov.io/github/mpjashby/crimedata?branch=master)
+
 The goal of crimedata is to access police-recorded crime data from large US 
 cities using the [Open Crime Database](https://osf.io/zyaqn/) (CODE), a service 
 that provides these data in a convenient format for analysis. All the data are 
@@ -62,6 +64,3 @@ The package includes two datasets. `homicides15` contains records of 1,922
 recorded homicides in nine US cities in 2015. `nycvehiclethefts` contains 
 records of 35,746 thefts of motor vehicles in New York City from 2014 to 2017.
 These may be particularly useful for teaching purposes.
-
-
-[![Travis-CI Build Status](https://travis-ci.org/mpjashby/crimedata.svg?branch=master)](https://travis-ci.org/mpjashby/crimedata)

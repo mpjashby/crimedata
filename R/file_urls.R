@@ -83,10 +83,6 @@ fetch_file_urls <- function () {
     result <- purrr::map_df(json$data, function (x) {
 
       # parse the file name into type and year
-      # file_name <- stringr::str_split(x$attributes$name, "\\.",
-      #                                 simplify = TRUE) %>%
-      #   purrr::pluck(1) %>%
-      #   stringr::str_split("_", simplify = TRUE)
       file_name <- stringr::str_match(
         x$attributes$name,
         paste0("^crime_open_database_(core|extended|sample)_(.+)_(\\d+).Rds$")

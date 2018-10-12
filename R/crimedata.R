@@ -33,8 +33,8 @@ NULL
 ## quiets concerns of R CMD check re: the .'s that appear in pipelines
 # code from:
 # https://github.com/STAT545-UBC/Discussion/issues/451#issuecomment-264598618
-if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
+if (getRversion() >= "2.15.1")  utils::globalVariables(c("."))
 
-## quiets concerns of R CMD check re non-standard evaluation in dplyr functions
+## quiets concerns of R CMD check re: non-standard evaluation in dplyr
 # code from: https://dplyr.tidyverse.org/articles/programming.html
 #' @importFrom rlang .data

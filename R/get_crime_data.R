@@ -116,8 +116,6 @@ get_crime_data <- function (years = NULL, cities = NULL, type = "sample",
   } else {
 
     # extract URLs for requested data
-    # urls <- dplyr::filter(urls, .data$data_type == type, .data$year %in% years,
-    #                       .data$city %in% cities)
     urls <- urls[urls$data_type == type & urls$year %in% years &
                    urls$city %in% cities, ]
 
@@ -146,7 +144,6 @@ get_crime_data <- function (years = NULL, cities = NULL, type = "sample",
     # fetch data
     # purrr::transpose() converts each row of the urls tibble into a list, which
     # can then by processed by purrr::map()
-    # crime_data <- urls[urls[["type"]] == type & urls[["year"]] %in% years, ]
     crime_data <- urls %>%
       purrr::transpose(.names = paste0(.$data_type, .$city, .$year)) %>%
     purrr::map(function (x) {
@@ -169,7 +166,7 @@ get_crime_data <- function (years = NULL, cities = NULL, type = "sample",
       this_crime_data <- readRDS(temp_file)
 
       # remove temporary file
-      # file.remove(temp_file)
+      file.remove(temp_file)
 
       # return data from file
       this_crime_data

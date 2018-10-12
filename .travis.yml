@@ -3,3 +3,12 @@
 language: R
 sudo: false
 cache: packages
+
+env:
+  - CODECOV_TOKEN="4b64dbde-7d8e-483b-99b1-17a1adc7c2f4"
+
+r_packages:
+  - covr
+
+after_success:
+  - Rscript -e 'covr::codecov()'
