@@ -32,8 +32,10 @@
 #' @export
 #'
 #' @examples
-#' # Retrieve data for specific years
-#' get_crime_data(years = 2011:2015, type = "sample")
+#' \dontrun{
+#' # Retrieve a 1% sample of data for specific years and cities
+#' get_crime_data(years = 2016:2017, cities = c("Tucson", "Virginia Beach"))
+#' }
 #'
 #' @import digest
 #' @import dplyr
