@@ -41,9 +41,9 @@ provided by the police department in each city. The extended data fields have
 not been harmonized across cities, so will require further cleaning before
 most types of analysis.
 
-Requesting all data may lead to problems with memory capacity. Consider
-downloading smaller quantities of data (e.g. using type = "sample") for
-exploratory analysis.
+Requesting all data (more than 17 million rows) may lead to problems with
+memory capacity. Consider downloading smaller quantities of data (e.g. using
+type = "sample") for exploratory analysis.
 }
 \examples{
 \dontrun{

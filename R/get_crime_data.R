@@ -3,18 +3,18 @@
 #' Retrieves data from the Open Crime Database for the specified years.
 #'
 #' By default this function returns a 1% sample of the 'core' data. This is the
-#' default to minimise accidentally requesting large files over a network.
+#' default to minimize accidentally requesting large files over a network.
 #'
-#' Seting type = "core" retrieves the core fields (e.g. the type, co-ordinates
+#' Setting type = "core" retrieves the core fields (e.g. the type, co-ordinates
 #' and date/time of each offense) for each offense.
 #' The data retrieved by setting type = "extended" includes all available fields
 #' provided by the police department in each city. The extended data fields have
 #' not been harmonized across cities, so will require further cleaning before
 #' most types of analysis.
 #'
-#' Requesting all data may lead to problems with memory capacity. Consider
-#' downloading smaller quantities of data (e.g. using type = "sample") for
-#' exploratory analysis.
+#' Requesting all data (more than 17 million rows) may lead to problems with
+#' memory capacity. Consider downloading smaller quantities of data (e.g. using
+#' type = "sample") for exploratory analysis.
 #'
 #' @param years A single integer or vector of integers specifying the years for
 #'   which data should be retrieved. If NULL (the default), data for the most
@@ -84,6 +84,32 @@ get_crime_data <- function (years = NULL, cities = NULL, type = "sample",
          "<https://osf.io/zyaqn/>.")
   }
 
+  # extract URLs for requested data
+  urls <- urls[urls$data_type == type & urls$year %in% years &
+                 urls$city %in% cities, ]
+
+  # check if specified combination of years and cities is available
+  if (nrow(urls) == 0) {
+
+    stop("The Crime Open Database does not contain data for any of the ",
+         "specified years for the specified cities.")
+
+  } else {
+
+    throw_away <- expand.grid(year = years, city = cities) %>%
+      apply(1, function (x) {
+        if (nrow(urls[urls$year == x[[1]] & urls$city == x[[2]], ]) == 0 &
+            quiet == FALSE) {
+          warning("Data are not available for crimes in ", x[[2]], " in ",
+                  x[[1]], call. = FALSE, immediate. = TRUE,
+                  noBreaks. = TRUE)
+        }
+      })
+
+    rm(throw_away)
+
+  }
+
   # digest() produces an MD5 hash of the type and years of data requested, so
   # that repeated calls to this function with the same arguments results in data
   # being retrieved from the cache, while calls with different arguments results
@@ -99,6 +125,8 @@ get_crime_data <- function (years = NULL, cities = NULL, type = "sample",
   if (cache == FALSE & length(cache_files) > 0) {
 
     lapply(cache_files, file.remove)
+    message("Deleting cached data and re-downloading from server.",
+            appendLF = TRUE)
 
   }
 
@@ -115,63 +143,37 @@ get_crime_data <- function (years = NULL, cities = NULL, type = "sample",
 
   } else {
 
-    # extract URLs for requested data
-    urls <- urls[urls$data_type == type & urls$year %in% years &
-                   urls$city %in% cities, ]
-
-    # check if specified combination of years and cities is available
-    if (nrow(urls) == 0) {
-
-      stop("The Crime Open Database does not contain data for any of the ",
-           "specified years for the specified cities.")
-
-    } else {
-
-      throw_away <- expand.grid(year = years, city = cities) %>%
-        apply(1, function (x) {
-          if (nrow(urls[urls$year == x[[1]] & urls$city == x[[2]], ]) == 0 &
-              quiet == FALSE) {
-            warning("Data are not available for crimes in ", x[[2]], " in ",
-                    x[[1]], call. = FALSE, immediate. = TRUE,
-                    noBreaks. = TRUE)
-          }
-        })
-
-      rm(throw_away)
-
-    }
-
     # fetch data
     # purrr::transpose() converts each row of the urls tibble into a list, which
     # can then by processed by purrr::map()
     crime_data <- urls %>%
       purrr::transpose(.names = paste0(.$data_type, .$city, .$year)) %>%
-    purrr::map(function (x) {
+      purrr::map(function (x) {
 
-      # report progress
-      if (quiet == FALSE) {
-        message("Downloading ", x[["data_type"]], " data for ", x[["city"]],
-                " in ", x[["year"]], appendLF = TRUE)
-      }
+        # report progress
+        if (quiet == FALSE) {
+          message("Downloading ", x[["data_type"]], " data for ", x[["city"]],
+                  " in ", x[["year"]], appendLF = TRUE)
+        }
 
-      # set name for temporary file
-      temp_file <- tempfile(pattern = "code_data_", fileext = ".Rds")
+        # set name for temporary file
+        temp_file <- tempfile(pattern = "code_data_", fileext = ".Rds")
 
-      # download remote file
-      httr::GET(x[["file_url"]], progress(type = "down")) %>%
-        httr::content(as = "raw") %>%
-        writeBin(temp_file)
+        # download remote file
+        httr::GET(x[["file_url"]], progress(type = "down")) %>%
+          httr::content(as = "raw") %>%
+          writeBin(temp_file)
 
-      # read file
-      this_crime_data <- readRDS(temp_file)
+        # read file
+        this_crime_data <- readRDS(temp_file)
 
-      # remove temporary file
-      file.remove(temp_file)
+        # remove temporary file
+        file.remove(temp_file)
 
-      # return data from file
-      this_crime_data
+        # return data from file
+        this_crime_data
 
-    }) %>%
+      }) %>%
       dplyr::bind_rows() %>%
       dplyr::arrange(.data$uid)
 
