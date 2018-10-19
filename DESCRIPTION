@@ -3,10 +3,10 @@ Title: Access Crime Data from the Open Crime Database
 Version: 0.1.0
 Authors@R: person("Matthew", "Ashby", email = "matthew.ashby@ntu.ac.uk", 
     role = c("aut", "cre"), 
-    comment = c(ORCID = "https://orcid.org/0000-0003-4201-9239"))
+    comment = c(ORCID = "<https://orcid.org/0000-0003-4201-9239>"))
 Description: Gives convenient access to publicly available police-recorded open
     crime data from large cities in the United States that are included in the
-    Open Crime Database <https://osf.io/zyaqn/>.
+    Crime Open Database <https://osf.io/zyaqn/>.
 Depends: R (>= 3.2.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
