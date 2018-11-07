@@ -1,0 +1,12 @@
+citHeader("To cite crimedata in publications, please use:")
+
+citEntry(entry = "misc",
+  author = personList(person(given = "Matthew P J", family = "Ashby")),
+  year = "2018",
+  title = "Studying crime and place with the Crime Open Database",
+  doi = "http://doi.org/10.31235/osf.io/9y7qz",
+  howpublished = "SocArXiv pre-print",
+  textVersion = paste("Ashby, M P J. (2018, August 12). Studying crime and",
+    "place with the Crime Open Database. doi:",
+    "<http://doi.org/10.31235/osf.io/9y7qz>")
+)

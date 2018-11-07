@@ -1,7 +1,8 @@
 context("Test function to get crime data")
 
-test_that("return value of get_crime_data is a tibble", {
+test_that("return value of get_crime_data is a tibble or SF object", {
   expect_is(get_crime_data(), "tbl_df")
+  expect_is(get_crime_data(output = "sf"), "sf")
 })
 
 test_that("incorrect arguments produce errors", {

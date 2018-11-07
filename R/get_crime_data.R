@@ -16,6 +16,9 @@
 #' memory capacity. Consider downloading smaller quantities of data (e.g. using
 #' type = "sample") for exploratory analysis.
 #'
+#' Setting output = "sf" returns the data in simple features format by calling
+#' \code{\link[sf:st_as_sf]{sf::st_as_sf(..., crs = 4326, remove = FALSE)}}
+#'
 #' @param years A single integer or vector of integers specifying the years for
 #'   which data should be retrieved. If NULL (the default), data for the most
 #'   recent year will be returned.
@@ -27,6 +30,9 @@
 #'   called again with the same arguments?
 #' @param quiet Should messages and warnings relating to data availability and
 #'   processing be suppressed?
+#' @param output Should the data be returned as a tibble by specifying "tbl"
+#'   (the default) or as a simple features (SF) object using the WGS 84
+#'   (EPSG:4326) co-ordinate reference system by specifying "sf"?
 #'
 #' @return A tibble containing data from the Open Crime Database.
 #' @export
@@ -41,14 +47,16 @@
 #' @import dplyr
 #' @import readr
 #' @import purrr
+#' @import sf
 get_crime_data <- function (years = NULL, cities = NULL, type = "sample",
-                            cache = TRUE, quiet = FALSE) {
+                            cache = TRUE, quiet = FALSE, output = "tbl") {
 
   # check for errors
   stopifnot(type %in% c("core", "extended", "sample"))
   stopifnot(is.character(cities) | is.null(cities))
   stopifnot(is.integer(as.integer(years)) | is.null(years))
   stopifnot(is.logical(quiet))
+  stopifnot(output %in% c("tbl", "sf"))
 
   # get tibble of available data
   urls <- get_file_urls(quiet = quiet)
@@ -77,7 +85,7 @@ get_crime_data <- function (years = NULL, cities = NULL, type = "sample",
   }
 
   # check if all specified cities are available
-  if (cities != "all" & !all(cities %in% unique(urls$city))) {
+  if (cities[1] != "all" & !all(cities %in% unique(urls$city))) {
     stop("One or more of the specified cities does not correspond to a city ",
          "for which data are available in the Open Crime Database. Check your ",
          "spelling or for details of available data, see ",
@@ -182,7 +190,16 @@ get_crime_data <- function (years = NULL, cities = NULL, type = "sample",
 
   }
 
-  # return data
-  crime_data
+  # return data, converting to SF format if necessary
+  if (output == "sf") {
+
+    sf::st_as_sf(crime_data, coords = c("longitude", "latitude"), crs = 4326,
+                 remove = FALSE)
+
+  } else {
+
+    crime_data
+
+  }
 
 }

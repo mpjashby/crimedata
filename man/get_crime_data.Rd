@@ -5,7 +5,7 @@
 \title{Get Data from the Open Crime Database}
 \usage{
 get_crime_data(years = NULL, cities = NULL, type = "sample",
-  cache = TRUE, quiet = FALSE)
+  cache = TRUE, quiet = FALSE, output = "tbl")
 }
 \arguments{
 \item{years}{A single integer or vector of integers specifying the years for
@@ -23,6 +23,10 @@ called again with the same arguments?}
 
 \item{quiet}{Should messages and warnings relating to data availability and
 processing be suppressed?}
+
+\item{output}{Should the data be returned as a tibble by specifying "tbl"
+(the default) or as a simple features (SF) object using the WGS 84
+(EPSG:4326) co-ordinate reference system by specifying "sf"?}
 }
 \value{
 A tibble containing data from the Open Crime Database.
@@ -32,9 +36,9 @@ Retrieves data from the Open Crime Database for the specified years.
 }
 \details{
 By default this function returns a 1% sample of the 'core' data. This is the
-default to minimise accidentally requesting large files over a network.
+default to minimize accidentally requesting large files over a network.
 
-Seting type = "core" retrieves the core fields (e.g. the type, co-ordinates
+Setting type = "core" retrieves the core fields (e.g. the type, co-ordinates
 and date/time of each offense) for each offense.
 The data retrieved by setting type = "extended" includes all available fields
 provided by the police department in each city. The extended data fields have
@@ -44,6 +48,9 @@ most types of analysis.
 Requesting all data (more than 17 million rows) may lead to problems with
 memory capacity. Consider downloading smaller quantities of data (e.g. using
 type = "sample") for exploratory analysis.
+
+Setting output = "sf" returns the data in simple features format by calling
+\code{\link[sf:st_as_sf]{sf::st_as_sf(..., crs = 4326, remove = FALSE)}}
 }
 \examples{
 \dontrun{

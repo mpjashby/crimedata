@@ -1,6 +1,9 @@
+^README\.Rmd$
+^CRAN-RELEASE$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
 ^\.travis\.yml$
 ^cran-comments\.md$
 ^codecov\.yml$
+^output\.*$
