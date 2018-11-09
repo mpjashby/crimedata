@@ -1,6 +1,8 @@
 #' Get Data from the Open Crime Database
 #'
-#' Retrieves data from the Open Crime Database for the specified years.
+#' Retrieves data from the Open Crime Database for the specified years. Latitude
+#' and longitude are specified using the WGS 84 (EPSG:4326) co-ordinate
+#' reference system.
 #'
 #' By default this function returns a 1% sample of the 'core' data. This is the
 #' default to minimize accidentally requesting large files over a network.
@@ -31,8 +33,8 @@
 #' @param quiet Should messages and warnings relating to data availability and
 #'   processing be suppressed?
 #' @param output Should the data be returned as a tibble by specifying "tbl"
-#'   (the default) or as a simple features (SF) object using the WGS 84
-#'   (EPSG:4326) co-ordinate reference system by specifying "sf"?
+#'   (the default) or as a simple features (SF) object using WGS 84 by
+#'   specifying "sf"?
 #'
 #' @return A tibble containing data from the Open Crime Database.
 #' @export
