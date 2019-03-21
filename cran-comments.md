@@ -7,7 +7,8 @@
 
 0 errors | 0 warnings | 1 note
 
-* This is a new release.
+* win-builder gives an 'Invalid DOI' message for the DOI 
+  <http://doi.org/10.31235/osf.io/9y7qz> but this DOI is valid.
 
 ## Reverse dependencies
 

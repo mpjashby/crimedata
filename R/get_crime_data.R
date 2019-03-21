@@ -4,8 +4,9 @@
 #' and longitude are specified using the WGS 84 (EPSG:4326) co-ordinate
 #' reference system.
 #'
-#' By default this function returns a 1% sample of the 'core' data. This is the
-#' default to minimize accidentally requesting large files over a network.
+#' By default this function returns a one-percent sample of the 'core' data.
+#' This is the default to minimize accidentally requesting large files over a
+#' network.
 #'
 #' Setting type = "core" retrieves the core fields (e.g. the type, co-ordinates
 #' and date/time of each offense) for each offense.
@@ -192,16 +193,37 @@ get_crime_data <- function (years = NULL, cities = NULL, type = "sample",
 
   }
 
-  # return data, converting to SF format if necessary
+  # convert to SF format if necessary
   if (output == "sf") {
 
-    sf::st_as_sf(crime_data, coords = c("longitude", "latitude"), crs = 4326,
-                 remove = FALSE)
-
-  } else {
-
-    crime_data
+    crime_data <- sf::st_as_sf(crime_data, coords = c("longitude", "latitude"),
+                               crs = 4326, remove = FALSE)
 
   }
+
+  # chang type of some variables
+  crime_data <- dplyr::mutate_at(
+    crime_data,
+    vars(one_of(c("city_name", "offense_code", "offense_type", "offense_group",
+                  "offense_against", "location_type", "location_category"))),
+    as.factor
+  )
+  crime_data <- dplyr::mutate_at(
+    crime_data,
+    vars("date_single"),
+    as.POSIXct, format = "%Y-%m-%d %H:%M"
+  )
+  if ("date_start" %in% names(crime_data) | "date_end" %in% names(crime_data)) {
+
+    crime_data <- dplyr::mutate_at(
+      crime_data,
+      vars(one_of(c("date_start", "date_end"))),
+      as.POSIXct, format = "%Y-%m-%d %H:%M"
+    )
+
+  }
+
+  # return data
+  crime_data
 
 }
