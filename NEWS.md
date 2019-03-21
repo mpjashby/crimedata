@@ -3,6 +3,7 @@
 * Added option of returning crime data as an sf object instead of a tibble.
 * Categorical variables are now returned as factors and date variables as POSIX
   variables.
+* Added vignette introducing the package.
 * Fixed a warning generated when requesting data from multiple named cities.
 
 

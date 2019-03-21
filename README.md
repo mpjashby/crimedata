@@ -47,7 +47,7 @@ personal_robberies <- get_crime_data(
   filter(offense_type == "personal robbery")
 ```
 
-You can alternatively get an SF object with the correct co-ordinates and co-ordinate reference system (CRS) specified by setting the argument `output = "sf"`. This can be used, for example, to quickly plot the data.
+You can alternatively get a [simple features (SF)](https://r-spatial.github.io/sf/articles/sf1.html) point object with the correct co-ordinates and co-ordinate reference system (CRS) specified by setting the argument `output = "sf"`. This can be used, for example, to quickly plot the data.
 
 ``` r
 library(dplyr)
