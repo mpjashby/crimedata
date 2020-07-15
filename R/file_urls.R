@@ -107,7 +107,7 @@ fetch_file_urls <- function () {
     })
 
     # combine the new data with any existing data
-    values <- rbind(values, result)
+    values <- rbind(tibble::as_tibble(values), result)
 
     # update the URL to the next page (or NULL if this is the last page)
     page_url <- json$links[["next"]]
