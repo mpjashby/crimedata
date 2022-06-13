@@ -46,53 +46,68 @@
 #' get_crime_data(years = 2016:2017, cities = c("Tucson", "Virginia Beach"))
 #' }
 #'
-#' @import digest
-#' @import dplyr
-#' @import readr
-#' @import purrr
-#' @import sf
-get_crime_data <- function (years = NULL, cities = NULL, type = "sample",
-                            cache = TRUE, quiet = FALSE, output = "tbl") {
+get_crime_data <- function (
+  years = NULL,
+  cities = NULL,
+  type = "sample",
+  cache = TRUE,
+  quiet = FALSE,
+  output = "tbl"
+) {
 
-  # check for errors
-  stopifnot(type %in% c("core", "extended", "sample"))
-  stopifnot(is.character(cities) | is.null(cities))
-  stopifnot(is.integer(as.integer(years)) | is.null(years))
-  stopifnot(is.logical(quiet))
-  stopifnot(output %in% c("tbl", "sf"))
+  # Check for errors
+  rlang::arg_match(type, c("core", "extended", "sample"))
+  if (!rlang::is_null(cities) & !rlang::is_character(cities))
+    rlang::abort("`cities` must be `NULL` or a character vector of city names.")
+  if (!rlang::is_null(years) & !rlang::is_integer(as.integer(years)))
+    rlang::abort("`years` must be `NULL` or an integer vector.")
+  if (!rlang::is_logical(quiet, n = 1))
+    rlang::abort("`quiet` must be `TRUE` or `FALSE`")
+  rlang::arg_match(output, c("tbl", "sf"))
 
-  # get tibble of available data
+  # Get tibble of available data
   urls <- get_file_urls(quiet = quiet)
 
-  # if years are not specified, use the most recent available year
+  # If years are not specified, use the most recent available year
   if (is.null(years)) {
     years <- max(urls$year)
   }
 
-  # if cities are not specified, use all available cities
+  # If cities are not specified, use all available cities
   if (is.null(cities)) {
     cities <- "all cities"
   }
 
-  # make sure years is of type integer, since there is a difference between the
+  # Make sure years is of type integer, since there is a difference between the
   # hashed values of the same numbers stored as numeric and stored as integer,
   # which makes a difference when specifying the cache file name
   years <- as.integer(years)
 
-  # check if all specified years are available
+  # Check if all specified years are available
   if (!all(years %in% unique(urls$year))) {
-    stop("One or more of the specified years does not correspond to a year of ",
-         "data available in the Open Crime Database. For details of available ",
-         "data, see <https://osf.io/zyaqn/>. Data for the current year are ",
-         "not available because the database is updated annually.")
+    rlang::abort(c(
+      "One or more of the requested years of data is not available",
+      "i" = stringr::str_glue(
+        "For details of data available in the Crime Open Database, see ",
+        "<https://osf.io/zyaqn/>"
+      ),
+      "i" = stringr::str_glue(
+        "Data for the current year are not available because the database is ",
+        "updated annually."
+      )
+    ))
   }
 
   # check if all specified cities are available
   if (cities[1] != "all" & !all(cities %in% unique(urls$city))) {
-    stop("One or more of the specified cities does not correspond to a city ",
-         "for which data are available in the Open Crime Database. Check your ",
-         "spelling or for details of available data, see ",
-         "<https://osf.io/zyaqn/>.")
+    rlang::abort(c(
+      "Data is not available for one or more of the specified cities.",
+      "?" = "Have you spelled the city names correctly?",
+      "i" = stringr::str_glue(
+        "For details of data available in the Crime Open Database, see ",
+        "<https://osf.io/zyaqn/>"
+      )
+    ))
   }
 
   # extract URLs for requested data
@@ -102,26 +117,33 @@ get_crime_data <- function (years = NULL, cities = NULL, type = "sample",
   # check if specified combination of years and cities is available
   if (nrow(urls) == 0) {
 
-    stop("The Crime Open Database does not contain data for any of the ",
-         "specified years for the specified cities.")
+    rlang::abort(stringr::str_glue(
+      "The Crime Open Database does not contain data for any of the ",
+      "specified cities for the specified years."
+    ))
 
   } else {
 
-    throw_away <- expand.grid(year = years, city = cities) %>%
-      apply(1, function (x) {
-        if (nrow(urls[urls$year == x[[1]] & urls$city == x[[2]], ]) == 0 &
-            quiet == FALSE) {
-          warning("Data are not available for crimes in ", x[[2]], " in ",
-                  x[[1]], call. = FALSE, immediate. = TRUE,
-                  noBreaks. = TRUE)
+    throw_away <- apply(
+      expand.grid(year = years, city = cities),
+      1,
+      function (x) {
+        if (
+          nrow(urls[urls$year == x[[1]] & urls$city == x[[2]], ]) == 0 &
+          quiet == FALSE
+        ) {
+          rlang::warn(stringr::str_glue(
+            "Data are not available for crimes in {x[[2]]} in {x[[1]]}"
+          ))
         }
-      })
+      }
+    )
 
     rm(throw_away)
 
   }
 
-  # digest() produces an MD5 hash of the type and years of data requested, so
+  # Digest() produces an MD5 hash of the type and years of data requested, so
   # that repeated calls to this function with the same arguments results in data
   # being retrieved from the cache, while calls with different arguments results
   # in fresh data being downloaded
@@ -132,95 +154,127 @@ get_crime_data <- function (years = NULL, cities = NULL, type = "sample",
   )
   cache_files <- dir(tempdir(), pattern = hash, full.names = TRUE)
 
-  # delete cached data if cache = FALSE
+  # Delete cached data if cache = FALSE
   if (cache == FALSE & length(cache_files) > 0) {
 
     lapply(cache_files, file.remove)
-    message("Deleting cached data and re-downloading from server.",
-            appendLF = TRUE)
+    if (quiet == FALSE)
+      rlang::inform("Deleting cached data and re-downloading from server.")
 
   }
 
-  # check if requested data are available in cache
+  # Check if requested data are available in cache
   if (cache == TRUE & length(cache_files) > 0) {
 
     if (quiet == FALSE) {
-      message("Loading cached data from previous request in this session. To ",
-              "download data again, call get_crime_data() with cache = FALSE.",
-              appendLF = TRUE)
+      rlang::inform(c(
+        "Loading cached data from previous request in this session.",
+        "i" = stringr::str_glue(
+          "The data is updated only once per year, so this is almost ",
+          "certainly safe"
+        ),
+        "i" = "To download data again, use `cache = FALSE`."
+      ))
     }
 
     crime_data <- readRDS(cache_files[1])
 
   } else {
 
-    # fetch data
+    # Fetch data
     # purrr::transpose() converts each row of the urls tibble into a list, which
     # can then by processed by purrr::map()
-    crime_data <- urls %>%
-      purrr::transpose(.names = paste0(.$data_type, .$city, .$year)) %>%
-      purrr::map(function (x) {
+    crime_data <- dplyr::arrange(
+      purrr::map_dfr(
+        purrr::transpose(
+          urls,
+          .names = paste0(urls$data_type, urls$city, urls$year)
+        ),
+        function (x) {
 
-        # report progress
-        if (quiet == FALSE) {
-          message("Downloading ", x[["data_type"]], " data for ", x[["city"]],
-                  " in ", x[["year"]], appendLF = TRUE)
+          # Report progress
+          if (quiet == FALSE) {
+            rlang::inform(stringr::str_glue(
+              "Downloading {x[['data_type']]} data for {x[['city']]} in ",
+              "{x[['year']]}"
+            ))
+          }
+
+          # Set name for temporary file
+          temp_file <- tempfile(pattern = "code_data_", fileext = ".Rds")
+
+          # Download remote file
+          if (quiet == TRUE) {
+            writeBin(
+              httr::content(httr::GET(x[["file_url"]]), as = "raw"),
+              temp_file
+            )
+          } else {
+            writeBin(
+              httr::content(
+                httr::GET(x[["file_url"]], httr::progress(type = "down")),
+                as = "raw"
+              ),
+              temp_file
+            )
+          }
+
+          # read file
+          this_crime_data <- readRDS(temp_file)
+
+          # remove temporary file
+          file.remove(temp_file)
+
+          # return data from file
+          this_crime_data
+
         }
+      ),
+      .data$uid
+    )
 
-        # set name for temporary file
-        temp_file <- tempfile(pattern = "code_data_", fileext = ".Rds")
-
-        # download remote file
-        httr::GET(x[["file_url"]], progress(type = "down")) %>%
-          httr::content(as = "raw") %>%
-          writeBin(temp_file)
-
-        # read file
-        this_crime_data <- readRDS(temp_file)
-
-        # remove temporary file
-        file.remove(temp_file)
-
-        # return data from file
-        this_crime_data
-
-      }) %>%
-      dplyr::bind_rows() %>%
-      dplyr::arrange(.data$uid)
-
-    # store data in cache
+    # Store data in cache
     saveRDS(crime_data, cache_file)
 
   }
 
-  # convert to SF format if necessary
+  # Convert to SF format if necessary
   if (output == "sf") {
 
-    crime_data <- sf::st_as_sf(crime_data, coords = c("longitude", "latitude"),
-                               crs = 4326, remove = FALSE)
+    crime_data <- sf::st_as_sf(
+      crime_data,
+      coords = c("longitude", "latitude"),
+      crs = 4326,
+      remove = FALSE
+    )
 
   }
 
-  # chang type of some variables
-  crime_data <- dplyr::mutate_at(
-    crime_data,
-    vars(one_of(c("city_name", "offense_code", "offense_type", "offense_group",
-                  "offense_against", "location_type", "location_category"))),
-    as.factor
+  # Change type of some variables
+  crime_data$city_name <- as.factor(crime_data$city_name)
+  crime_data$offense_code <- as.factor(crime_data$offense_code)
+  crime_data$offense_type <- as.factor(crime_data$offense_type)
+  crime_data$offense_group <- as.factor(crime_data$offense_group)
+  crime_data$offense_against <- as.factor(crime_data$offense_against)
+  crime_data$date_single <- as.POSIXct(
+    crime_data$date_single,
+    format = "%Y-%m-%d %H:%M"
   )
-  crime_data <- dplyr::mutate_at(
-    crime_data,
-    vars("date_single"),
-    as.POSIXct, format = "%Y-%m-%d %H:%M"
-  )
-  if ("date_start" %in% names(crime_data) | "date_end" %in% names(crime_data)) {
-
-    crime_data <- dplyr::mutate_at(
-      crime_data,
-      vars(one_of(c("date_start", "date_end"))),
-      as.POSIXct, format = "%Y-%m-%d %H:%M"
+  if ("location_type" %in% names(crime_data))
+    crime_data$location_type <- as.factor(crime_data$location_type)
+  if ("location_category" %in% names(crime_data))
+    crime_data$location_category <- as.factor(crime_data$location_category)
+  if ("date_start" %in% names(crime_data)) {
+    crime_data$date_start <- as.POSIXct(
+      crime_data$date_start,
+      format = "%Y-%m-%d %H:%M"
     )
-
+  }
+  if ("date_end" %in% names(crime_data)) {
+    crime_data$date_end <- as.POSIXct(
+      crime_data$date_end,
+      format = "%Y-%m-%d %H:%M"
+    )
   }
 
   # return data

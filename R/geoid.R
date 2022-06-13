@@ -18,41 +18,49 @@
 #' @examples
 #' block_geoid_to("360810443021005", to = "county", name = TRUE)
 #'
-#' @import dplyr
-#' @import stringr
 block_geoid_to <- function (geoid, to, name = FALSE) {
 
-  # check inputs
-  stopifnot(is.character(as.character(geoid)) |
-              all(stringr::str_length(as.character(geoid)) == 15))
-  stopifnot(is.character(to) | to %in% c("state", "county", "tract",
-                                         "block group", "blockgroup"))
-  stopifnot(is.logical(name))
+  # Check inputs
+  if (!rlang::is_character(as.character(geoid)))
+    rlang::abort("`geoid` must be a character vector.")
+  if (any(stringr::str_length(as.character(geoid)) != 15))
+    rlang::abort("Values in `geoid` must be 15 characters long.")
+  rlang::arg_match(
+    to,
+    values = c("state", "county", "tract", "block group", "blockgroup")
+  )
+  if (!rlang::is_logical(name, n = 1))
+    rlang::abort("`name` must be one of `TRUE` or `FALSE`")
 
-  # complain about requesting names for geographies that don't have them
-  if (name == TRUE &
-      to %in% c("tract", "block group", "blockgroup")) {
-    stop("Names are only available for states and counties.")
-  }
+  # Complain about requesting names for geographies that don't have them
+  if (name == TRUE & !to %in% c("state", "county"))
+    rlang::abort("Names are only available for states and counties.")
 
   if (name == TRUE) {
+
     if (to == "county") {
 
-      values <- paste0(county_names$name[match(stringr::str_sub(geoid, 0, 5),
-                                               county_names$geoid)],
-                       ", ",
-                       county_names$state[match(stringr::str_sub(geoid, 0, 5),
-                                                county_names$geoid)])
+      values <- paste0(
+        county_names$name[
+          match(stringr::str_sub(geoid, 0, 5), county_names$geoid)
+        ],
+        ", ",
+        county_names$state[
+          match(stringr::str_sub(geoid, 0, 5), county_names$geoid)
+        ]
+      )
 
     } else if (to == "state") {
 
-      values <- state_names$name[match(stringr::str_sub(geoid, 0, 2),
-                                       state_names$geoid)]
+      values <- state_names$name[
+        match(stringr::str_sub(geoid, 0, 2), state_names$geoid)
+      ]
 
     }
 
   } else {
-    # identify how many characters of the geoid to keep
+
+    # Identify how many characters of `geoid` to keep
     output_length <- dplyr::case_when(
       to == "state" ~ 2,
       to == "county" ~ 5,

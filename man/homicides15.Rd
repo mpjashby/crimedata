@@ -4,7 +4,8 @@
 \name{homicides15}
 \alias{homicides15}
 \title{Homicides in nine cities in 2015}
-\format{A tibble with 1,922 rows and 15 variables:
+\format{
+A tibble with 1,922 rows and 15 variables:
 \describe{
   \item{uid}{an integer unique identifier for the offense}
   \item{city_name}{name of the city in which the crime occurred}
@@ -21,7 +22,8 @@
   \item{tract}{six-digit code for 2016 census tract}
   \item{block_group}{one-digit code for 2016 census block group}
   \item{block}{four-digit code for 2016 census block}
-}}
+}
+}
 \source{
 \url{https://osf.io/zyaqn/}
 }

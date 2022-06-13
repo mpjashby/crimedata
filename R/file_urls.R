@@ -23,15 +23,19 @@ get_file_urls <- function (quiet = FALSE) {
     urls <- readRDS(cache_file)
 
     if (quiet == FALSE) {
-      message("Using cached URLs to get data from server. These URLs rarely ",
-              "change and this is almost certainly safe.", appendLF = TRUE)
+      rlang::inform(c(
+        "Using cached URLs to get data from server.",
+        "i" = "These URLs rarely change and this is almost certainly safe."
+      ))
     }
 
   } else {
 
     if (quiet == FALSE) {
-      message("Downloading list of URLs for data files. This takes a few ",
-              "seconds but is only done once per session.", appendLF = TRUE)
+      rlang::inform(c(
+        "Downloading list of URLs for data files.",
+        "i" = "This takes a few seconds but is only done once per session."
+      ))
     }
 
     # get URLs from server
@@ -54,20 +58,17 @@ get_file_urls <- function (quiet = FALSE) {
 #'
 #' @return a tibble with three columns: type, year and file_url
 #'
-#' @import dplyr
-#' @import httr
-#' @import tibble
-#' @import purrr
-#' @import stringr
 fetch_file_urls <- function () {
 
-  # create an empty tibble in which to store the result
-  values <- tibble::tibble(type = character(), year = character(),
-                           file_url = character())
+  # Create an empty data frame in which to store the result
+  values <- data.frame(
+    type = character(),
+    year = character(),
+    file_url = character()
+  )
 
   # specify the URL of the API end point
-  page_url <- paste0("https://api.osf.io/v2/nodes/zyaqn/files/osfstorage/",
-                     "5bbde32b7cb18100193c778a/?format=json")
+  page_url <- "https://api.osf.io/v2/nodes/zyaqn/files/osfstorage/5bbde32b7cb18100193c778a/?format=json"
 
   # fetch paginated results until there are none left, at which point page_url
   # will be NULL
@@ -80,7 +81,7 @@ fetch_file_urls <- function () {
       httr::content(as = "parsed", type = "application/json")
 
     # extract the data as a tibble
-    result <- purrr::map_df(json$data, function (x) {
+    result <- purrr::map_dfr(json$data, function (x) {
 
       # parse the file name into type and year
       file_name <- stringr::str_match(
@@ -90,8 +91,9 @@ fetch_file_urls <- function () {
         as.character()
 
       # extract city_name
-      city_name <- stringr::str_to_title(stringr::str_replace_all(file_name[3],
-                                                                  "_", " "))
+      city_name <- stringr::str_to_title(
+        stringr::str_replace_all(file_name[3], "_", " ")
+      )
       if (city_name == "All") {
         city_name <- "all cities"
       }
@@ -138,11 +140,16 @@ fetch_file_urls <- function () {
 #' @import dplyr
 list_crime_data <- function (quiet = FALSE) {
 
-  get_file_urls(quiet = quiet) %>%
-    dplyr::group_by(.data$city) %>%
-    dplyr::summarise(year_min = min(.data$year),
-                     year_max = max(.data$year)) %>%
-    dplyr::mutate(years = paste(.data$year_min, "to", .data$year_max)) %>%
-    dplyr::select(.data$city, .data$years)
+  dplyr::select(
+    dplyr::mutate(
+      dplyr::summarise(
+        dplyr::group_by(get_file_urls(quiet = quiet), .data$city),
+        year_min = min(.data$year),
+        year_max = max(.data$year)
+      ),
+      years = paste(.data$year_min, "to", .data$year_max)
+    ),
+    .data$city, .data$years
+  )
 
 }

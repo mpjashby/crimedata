@@ -4,7 +4,8 @@
 \name{nycvehiclethefts}
 \alias{nycvehiclethefts}
 \title{Thefts of motor vehicles 2014 to 2017}
-\format{A tibble with 35,746 rows and 13 variables:
+\format{
+A tibble with 35,746 rows and 13 variables:
 \describe{
   \item{uid}{an integer unique identifier for the offense}
   \item{date_single}{date (and, in most cases, time) half-way between the first and last possible dates at which the offense could have occurred}
@@ -19,7 +20,8 @@
   \item{tract}{six-digit code for 2016 census tract}
   \item{block_group}{one-digit code for 2016 census block group}
   \item{block}{four-digit code for 2016 census block}
-}}
+}
+}
 \source{
 \url{https://osf.io/zyaqn/}
 }

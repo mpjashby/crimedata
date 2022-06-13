@@ -4,8 +4,14 @@
 \alias{get_crime_data}
 \title{Get Data from the Open Crime Database}
 \usage{
-get_crime_data(years = NULL, cities = NULL, type = "sample",
-  cache = TRUE, quiet = FALSE, output = "tbl")
+get_crime_data(
+  years = NULL,
+  cities = NULL,
+  type = "sample",
+  cache = TRUE,
+  quiet = FALSE,
+  output = "tbl"
+)
 }
 \arguments{
 \item{years}{A single integer or vector of integers specifying the years for

@@ -3,7 +3,6 @@
 \docType{package}
 \name{crimedata}
 \alias{crimedata}
-\alias{crimedata-package}
 \title{crimedata: a package for accessing US city crime data}
 \description{
 Access incident-level crime data from the Open Crime Database
