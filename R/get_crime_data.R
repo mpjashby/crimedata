@@ -26,8 +26,8 @@
 #'   which data should be retrieved. If NULL (the default), data for the most
 #'   recent year will be returned.
 #' @param cities A character vector of city names for which data should be
-#'   retrieved. If NULL (the default), data for all available cities will be
-#'   returned.
+#'   retrieved. Case insensitive. If NULL (the default), data for all available
+#'   cities will be returned.
 #' @param type Either "sample" (the default), "core" or "extended".
 #' @param cache Should the result be cached and then re-used if the function is
 #'   called again with the same arguments?
@@ -41,7 +41,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Retrieve a 1% sample of data for specific years and cities
 #' get_crime_data(years = 2016:2017, cities = c("Tucson", "Virginia Beach"))
 #' }
@@ -59,14 +59,15 @@ get_crime_data <- function (
   rlang::arg_match(type, c("core", "extended", "sample"))
   if (!rlang::is_null(cities) & !rlang::is_character(cities))
     rlang::abort("`cities` must be `NULL` or a character vector of city names.")
-  if (!rlang::is_null(years) & !rlang::is_integer(as.integer(years)))
+  if (!rlang::is_null(years) & !rlang::is_integerish(years))
     rlang::abort("`years` must be `NULL` or an integer vector.")
   if (!rlang::is_logical(quiet, n = 1))
-    rlang::abort("`quiet` must be `TRUE` or `FALSE`")
+    rlang::abort("`quiet` must be `TRUE` or `FALSE`.")
   rlang::arg_match(output, c("tbl", "sf"))
 
   # Get tibble of available data
   urls <- get_file_urls(quiet = quiet)
+  urls$city <- tolower(urls$city)
 
   # If years are not specified, use the most recent available year
   if (is.null(years)) {
@@ -75,8 +76,11 @@ get_crime_data <- function (
 
   # If cities are not specified, use all available cities
   if (is.null(cities)) {
-    cities <- "all cities"
+    cities <- "All cities"
   }
+
+  # Convert city names to lower case
+  cities <- tolower(cities)
 
   # Make sure years is of type integer, since there is a difference between the
   # hashed values of the same numbers stored as numeric and stored as integer,
@@ -85,29 +89,33 @@ get_crime_data <- function (
 
   # Check if all specified years are available
   if (!all(years %in% unique(urls$year))) {
-    rlang::abort(c(
-      "One or more of the requested years of data is not available",
-      "i" = stringr::str_glue(
-        "For details of data available in the Crime Open Database, see ",
-        "<https://osf.io/zyaqn/>"
-      ),
-      "i" = stringr::str_glue(
-        "Data for the current year are not available because the database is ",
-        "updated annually."
+    rlang::abort(
+      c(
+        "One or more of the requested years of data is not available",
+        "i" = stringr::str_glue(
+          "For details of data available in the Crime Open Database, see ",
+          "<https://osf.io/zyaqn/>"
+        ),
+        "i" = stringr::str_glue(
+          "Data for the current year are not available because the database ",
+          "is updated annually."
+        )
       )
-    ))
+    )
   }
 
   # check if all specified cities are available
   if (cities[1] != "all" & !all(cities %in% unique(urls$city))) {
-    rlang::abort(c(
-      "Data is not available for one or more of the specified cities.",
-      "?" = "Have you spelled the city names correctly?",
-      "i" = stringr::str_glue(
-        "For details of data available in the Crime Open Database, see ",
-        "<https://osf.io/zyaqn/>"
+    rlang::abort(
+      c(
+        "Data is not available for one or more of the specified cities.",
+        "*" = "Have you spelled the city names correctly?",
+        "i" = stringr::str_glue(
+          "For details of data available in the Crime Open Database, see ",
+          "<https://osf.io/zyaqn/>"
+        )
       )
-    ))
+    )
   }
 
   # extract URLs for requested data
@@ -133,7 +141,8 @@ get_crime_data <- function (
           quiet == FALSE
         ) {
           rlang::warn(stringr::str_glue(
-            "Data are not available for crimes in {x[[2]]} in {x[[1]]}"
+            "Data are not available for crimes in ",
+            "{stringr::str_to_title(x[[2]])} in {x[[1]]}"
           ))
         }
       }
@@ -171,7 +180,7 @@ get_crime_data <- function (
         "Loading cached data from previous request in this session.",
         "i" = stringr::str_glue(
           "The data is updated only once per year, so this is almost ",
-          "certainly safe"
+          "certainly safe."
         ),
         "i" = "To download data again, use `cache = FALSE`."
       ))
@@ -195,8 +204,8 @@ get_crime_data <- function (
           # Report progress
           if (quiet == FALSE) {
             rlang::inform(stringr::str_glue(
-              "Downloading {x[['data_type']]} data for {x[['city']]} in ",
-              "{x[['year']]}"
+              "Downloading {x[['data_type']]} data for ",
+              "{stringr::str_to_title(x[['city']])} in {x[['year']]}"
             ))
           }
 

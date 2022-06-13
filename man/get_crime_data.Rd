@@ -19,8 +19,8 @@ which data should be retrieved. If NULL (the default), data for the most
 recent year will be returned.}
 
 \item{cities}{A character vector of city names for which data should be
-retrieved. If NULL (the default), data for all available cities will be
-returned.}
+retrieved. Case insensitive. If NULL (the default), data for all available
+cities will be returned.}
 
 \item{type}{Either "sample" (the default), "core" or "extended".}
 
@@ -62,7 +62,7 @@ Setting output = "sf" returns the data in simple features format by calling
 \code{\link[sf:st_as_sf]{sf::st_as_sf(..., crs = 4326, remove = FALSE)}}
 }
 \examples{
-\dontrun{
+\donttest{
 # Retrieve a 1\% sample of data for specific years and cities
 get_crime_data(years = 2016:2017, cities = c("Tucson", "Virginia Beach"))
 }

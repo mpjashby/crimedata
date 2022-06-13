@@ -4,9 +4,12 @@
 \alias{get_file_urls}
 \title{Get URLs for Open Crime Database files}
 \usage{
-get_file_urls(quiet = FALSE)
+get_file_urls(cache = TRUE, quiet = FALSE)
 }
 \arguments{
+\item{cache}{Should the result be cached and then re-used if the function is
+called again with the same arguments?}
+
 \item{quiet}{Should messages and warnings relating to data availability be
 suppressed?}
 }

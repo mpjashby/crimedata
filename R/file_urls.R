@@ -3,11 +3,19 @@
 #' URLs are either obtained from the OSF API or, if a cached version exists,
 #' from the cache.
 #'
+#' @param cache Should the result be cached and then re-used if the function is
+#'   called again with the same arguments?
 #' @param quiet Should messages and warnings relating to data availability be
 #'   suppressed?
 #'
 #' @import digest
-get_file_urls <- function (quiet = FALSE) {
+get_file_urls <- function (cache = TRUE, quiet = FALSE) {
+
+  # Check inputs
+  if (!rlang::is_logical(cache, n = 1))
+    rlang::abort("`cache` must be `TRUE` or `FALSE`")
+  if (!rlang::is_logical(quiet, n = 1))
+    rlang::abort("`quiet` must be `TRUE` or `FALSE`")
 
   # set path for cache file
   cache_file <- paste0(tempdir(), "/crimedata_urls_",
@@ -17,6 +25,7 @@ get_file_urls <- function (quiet = FALSE) {
   if (
     file.exists(cache_file)
     & file.mtime(cache_file) > Sys.time() - 60 * 60 * 24
+    & cache == TRUE
   ) {
 
     # get URLs from cache
@@ -76,26 +85,27 @@ fetch_file_urls <- function () {
 
     # get a page of JSON results from the server, throwing an error if the
     # HTTP status suggests a problem
-    json <- httr::GET(page_url) %>%
-      httr::stop_for_status() %>%
-      httr::content(as = "parsed", type = "application/json")
+    json <- httr::content(
+      httr::stop_for_status(httr::GET(page_url)),
+      as = "parsed",
+      type = "application/json"
+    )
 
     # extract the data as a tibble
     result <- purrr::map_dfr(json$data, function (x) {
 
       # parse the file name into type and year
-      file_name <- stringr::str_match(
+      file_name <- as.character(stringr::str_match(
         x$attributes$name,
         paste0("^crime_open_database_(core|extended|sample)_(.+)_(\\d+).Rds$")
-      ) %>%
-        as.character()
+      ))
 
       # extract city_name
       city_name <- stringr::str_to_title(
         stringr::str_replace_all(file_name[3], "_", " ")
       )
       if (city_name == "All") {
-        city_name <- "all cities"
+        city_name <- "All cities"
       }
 
       # return a list of data for this file
@@ -137,7 +147,6 @@ fetch_file_urls <- function () {
 #'
 #' @export
 #'
-#' @import dplyr
 list_crime_data <- function (quiet = FALSE) {
 
   dplyr::select(
