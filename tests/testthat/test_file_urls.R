@@ -22,5 +22,5 @@ test_that("file_url column of return value contains only URLs", {
 })
 
 test_that("return value of list_crime_data is a tibble", {
-  expect_is(list_crime_data(), "tbl_df")
+  expect_is(list_crime_data(), "data.frame")
 })

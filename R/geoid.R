@@ -61,11 +61,18 @@ block_geoid_to <- function (geoid, to, name = FALSE) {
   } else {
 
     # Identify how many characters of `geoid` to keep
-    output_length <- dplyr::case_when(
-      to == "state" ~ 2,
-      to == "county" ~ 5,
-      to == "tract" ~ 11,
-      to %in% c("block group", "blockgroup") ~ 12
+    output_length <- ifelse(
+      to == "state",
+      2,
+      ifelse(
+        to == "county",
+        5,
+        ifelse(
+          to == "tract",
+          11,
+          ifelse(to %in% c("block group", "blockgroup"), 12, NA_real_)
+        )
+      )
     )
 
     # extract required number of digits

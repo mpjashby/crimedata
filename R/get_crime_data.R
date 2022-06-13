@@ -152,7 +152,7 @@ get_crime_data <- function (
 
   }
 
-  # Digest() produces an MD5 hash of the type and years of data requested, so
+  # `digest()` produces an MD5 hash of the type and years of data requested, so
   # that repeated calls to this function with the same arguments results in data
   # being retrieved from the cache, while calls with different arguments results
   # in fresh data being downloaded
@@ -193,54 +193,52 @@ get_crime_data <- function (
     # Fetch data
     # purrr::transpose() converts each row of the urls tibble into a list, which
     # can then by processed by purrr::map()
-    crime_data <- dplyr::arrange(
-      purrr::map_dfr(
-        purrr::transpose(
-          urls,
-          .names = paste0(urls$data_type, urls$city, urls$year)
-        ),
-        function (x) {
-
-          # Report progress
-          if (quiet == FALSE) {
-            rlang::inform(stringr::str_glue(
-              "Downloading {x[['data_type']]} data for ",
-              "{stringr::str_to_title(x[['city']])} in {x[['year']]}"
-            ))
-          }
-
-          # Set name for temporary file
-          temp_file <- tempfile(pattern = "code_data_", fileext = ".Rds")
-
-          # Download remote file
-          if (quiet == TRUE) {
-            writeBin(
-              httr::content(httr::GET(x[["file_url"]]), as = "raw"),
-              temp_file
-            )
-          } else {
-            writeBin(
-              httr::content(
-                httr::GET(x[["file_url"]], httr::progress(type = "down")),
-                as = "raw"
-              ),
-              temp_file
-            )
-          }
-
-          # read file
-          this_crime_data <- readRDS(temp_file)
-
-          # remove temporary file
-          file.remove(temp_file)
-
-          # return data from file
-          this_crime_data
-
-        }
+    crime_data <- purrr::map_dfr(
+      purrr::transpose(
+        urls,
+        .names = paste0(urls$data_type, urls$city, urls$year)
       ),
-      .data$uid
+      function (x) {
+
+        # Report progress
+        if (quiet == FALSE) {
+          rlang::inform(stringr::str_glue(
+            "Downloading {x[['data_type']]} data for ",
+            "{stringr::str_to_title(x[['city']])} in {x[['year']]}"
+          ))
+        }
+
+        # Set name for temporary file
+        temp_file <- tempfile(pattern = "code_data_", fileext = ".Rds")
+
+        # Download remote file
+        if (quiet == TRUE) {
+          writeBin(
+            httr::content(httr::GET(x[["file_url"]]), as = "raw"),
+            temp_file
+          )
+        } else {
+          writeBin(
+            httr::content(
+              httr::GET(x[["file_url"]], httr::progress(type = "down")),
+              as = "raw"
+            ),
+            temp_file
+          )
+        }
+
+        # read file
+        this_crime_data <- readRDS(temp_file)
+
+        # remove temporary file
+        file.remove(temp_file)
+
+        # return data from file
+        this_crime_data
+
+      }
     )
+    crime_data <- crime_data[order(crime_data$uid), ]
 
     # Store data in cache
     saveRDS(crime_data, cache_file)
