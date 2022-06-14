@@ -1,0 +1,24 @@
+url: http://pkgs.lesscrime.info/crimedata
+template:
+  bootstrap: 5
+
+reference:
+- title: Get crime data
+  desc: Load data from the [Crime Open Database](https://osf.io/zyaqn/).
+  contents:
+  - get_crime_data
+  - list_crime_data
+- title: Convert US Census Bureau GEOIDs for blocks
+  desc: >
+    Convert the GEOID of a 2016 US Census block to the name or GEOID for the
+    corresponding state, county, tract or block group.
+  contents:
+  - block_geoid_to
+- title: Built-in data
+  desc: Built-in datasets for testing and teaching purposes
+  contents:
+  - homicides15
+  - nycvehiclethefts
+- title: internal
+  contents:
+  - crimedata
