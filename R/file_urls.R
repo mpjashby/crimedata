@@ -8,7 +8,9 @@
 #' @param quiet Should messages and warnings relating to data availability be
 #'   suppressed?
 #'
-get_file_urls <- function (cache = TRUE, quiet = FALSE) {
+#' @noRd
+#'
+get_file_urls <- function(cache = TRUE, quiet = FALSE) {
 
   # Check inputs
   if (!rlang::is_logical(cache, n = 1))
@@ -67,7 +69,9 @@ get_file_urls <- function (cache = TRUE, quiet = FALSE) {
 #' @return a tibble with four columns: `data_type`, `city`, `year` and
 #'   `file_url`
 #'
-fetch_file_urls <- function () {
+#' @noRd
+#'
+fetch_file_urls <- function() {
 
   # Retrieve data types separtely because there seems to be some undocumented
   # limit on the number of files returned by each API call, even with pagination
@@ -77,7 +81,7 @@ fetch_file_urls <- function () {
     "https://api.osf.io/v2/nodes/zyaqn/files/osfstorage/5bbde32b7cb18100193c778a/?filter[name]=sample"
   )
 
-  json_values <- purrr::map(urls, function (x) {
+  json_values <- purrr::map(urls, function(x) {
 
     page_url <- x
 
@@ -106,9 +110,9 @@ fetch_file_urls <- function () {
 
   })
 
-  values <- purrr::map_dfr(json_values, function (x) {
+  values <- purrr::map_dfr(json_values, function(x) {
 
-    purrr::map_dfr(x, function (y) {
+    purrr::map_dfr(x, function(y) {
 
       # Parse the file name into type and year
       file_name <- as.character(stringr::str_match(
@@ -155,9 +159,14 @@ fetch_file_urls <- function () {
 #'
 #' @return A tibble
 #'
+#' @examples
+#' \donttest{
+#' list_crime_data()
+#' }
+#'
 #' @export
 #'
-list_crime_data <- function (quiet = FALSE) {
+list_crime_data <- function(quiet = FALSE) {
 
   # Get DF of URLs
   urls <- get_file_urls(quiet = quiet)
@@ -169,7 +178,7 @@ list_crime_data <- function (quiet = FALSE) {
   )[, c(1, 2, 4)]
 
   # Format those years into a character value
-  first_last_years$years = paste(
+  first_last_years$years <- paste(
     first_last_years$year,
     "to",
     first_last_years$year.1

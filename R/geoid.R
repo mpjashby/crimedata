@@ -4,7 +4,7 @@
 #' corresponding state, county, tract or block group.
 #'
 #' For details of the format of US Census GEOIDs, see
-#' \url{https://www.census.gov/geo/reference/geoidentifiers.html}.
+#' \url{https://www.census.gov/programs-surveys/geography/guidance/geo-identifiers.html}.
 #'
 #' @param geoid A character vector of 15-digit US Census block GEOIDs.
 #' @param to One of "state", "county", "tract", "block group" or (as an alias)
@@ -18,7 +18,7 @@
 #' @examples
 #' block_geoid_to("360810443021005", to = "county", name = TRUE)
 #'
-block_geoid_to <- function (geoid, to, name = FALSE) {
+block_geoid_to <- function(geoid, to, name = FALSE) {
 
   # Check inputs
   if (!rlang::is_character(as.character(geoid)))

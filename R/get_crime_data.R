@@ -43,10 +43,14 @@
 #' @examples
 #' \donttest{
 #' # Retrieve a 1% sample of data for specific years and cities
-#' get_crime_data(years = 2016:2017, cities = c("Tucson", "Virginia Beach"))
+#' get_crime_data(
+#'   years = 2016:2017,
+#'   cities = c("Tucson", "Virginia Beach"),
+#'   quiet = TRUE
+#' )
 #' }
 #'
-get_crime_data <- function (
+get_crime_data <- function(
   years = NULL,
   cities = NULL,
   type = "sample",
@@ -135,7 +139,7 @@ get_crime_data <- function (
     throw_away <- apply(
       expand.grid(year = years, city = cities),
       1,
-      function (x) {
+      function(x) {
         if (
           nrow(urls[urls$year == x[[1]] & urls$city == x[[2]], ]) == 0 &
           quiet == FALSE
@@ -198,7 +202,7 @@ get_crime_data <- function (
         urls,
         .names = paste0(urls$data_type, urls$city, urls$year)
       ),
-      function (x) {
+      function(x) {
 
         # Report progress
         if (quiet == FALSE) {
@@ -258,30 +262,27 @@ get_crime_data <- function (
   }
 
   # Change type of some variables
-  crime_data$city_name <- as.factor(crime_data$city_name)
-  crime_data$offense_code <- as.factor(crime_data$offense_code)
-  crime_data$offense_type <- as.factor(crime_data$offense_type)
-  crime_data$offense_group <- as.factor(crime_data$offense_group)
-  crime_data$offense_against <- as.factor(crime_data$offense_against)
-  crime_data$date_single <- as.POSIXct(
-    crime_data$date_single,
-    format = "%Y-%m-%d %H:%M"
+  crime_data <- dplyr::mutate_at(
+    crime_data,
+    dplyr::vars(dplyr::one_of(c(
+      "city_name", "offense_code", "offense_type", "offense_group",
+      "offense_against", "location_type", "location_category"
+    ))),
+    as.factor
   )
-  if ("location_type" %in% names(crime_data))
-    crime_data$location_type <- as.factor(crime_data$location_type)
-  if ("location_category" %in% names(crime_data))
-    crime_data$location_category <- as.factor(crime_data$location_category)
-  if ("date_start" %in% names(crime_data)) {
-    crime_data$date_start <- as.POSIXct(
-      crime_data$date_start,
-      format = "%Y-%m-%d %H:%M"
+  crime_data <- dplyr::mutate_at(
+    crime_data,
+    dplyr::vars("date_single"),
+    as.POSIXct, format = "%Y-%m-%d %H:%M"
+  )
+  if ("date_start" %in% names(crime_data) | "date_end" %in% names(crime_data)) {
+
+    crime_data <- dplyr::mutate_at(
+      crime_data,
+      dplyr::vars(dplyr::one_of(c("date_start", "date_end"))),
+      as.POSIXct, format = "%Y-%m-%d %H:%M"
     )
-  }
-  if ("date_end" %in% names(crime_data)) {
-    crime_data$date_end <- as.POSIXct(
-      crime_data$date_end,
-      format = "%Y-%m-%d %H:%M"
-    )
+
   }
 
   # return data
