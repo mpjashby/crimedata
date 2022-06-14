@@ -3,4 +3,3 @@
 export(block_geoid_to)
 export(get_crime_data)
 export(list_crime_data)
-import(digest)
