@@ -1,15 +1,12 @@
-## Test environments
-* local OS X install, R 3.5.1
-* ubuntu 14.04 (on travis-ci), R 3.5.1
-* win-builder (devel and release)
-
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
 
+New submission
+
+Package was archived on CRAN
+
+* This package was archived due to an out-of-date maintainer email address, 
+  which I have now fixed.
 * win-builder gives an 'Invalid DOI' message for the DOI 
-  <http://doi.org/10.31235/osf.io/9y7qz> but this DOI is valid.
-
-## Reverse dependencies
-
-This is a new release, so there are no reverse dependencies.
+  https://doi.org/10.1163/24523666-00401007 but this DOI is valid.

@@ -1,3 +1,12 @@
+# crimedata 0.3.0
+
+* Errors, warnings and messages are now generated using `rlang` to make them
+  easier to read.
+* The `cities` argument to `get_crime_data()` is now case insensitive.
+* Removed dependencies on `magrittr`, `readr` and `tibble`.
+* Updated author contact details.
+
+
 # crimedata 0.2.0
 
 * Added option of returning crime data as an sf object instead of a tibble.
@@ -10,6 +19,3 @@
 # crimedata 0.1.0
 
 * Added a `NEWS.md` file to track changes to the package.
-
-
-
