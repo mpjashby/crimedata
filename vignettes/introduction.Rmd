@@ -28,7 +28,7 @@ object](https://CRAN.R-project.org/package=sf) of crime data with each row
 representing a single crime. The data provided for each offense includes the
 offense type, approximate offense location and date/time. More fields are
 available for some records, depending on what data have been released by each
-city. For most cities, data are available from 2010 onwards, with some available
+city. For most cities, data are available from 2010 onward, with some available
 back to 2007. Use `list_crime_data()` to see which years are available for which
 cities.
 More detail about what data are available, how they were constructed and the
@@ -64,7 +64,7 @@ crime_data <- get_crime_data()
 ```
 
 The data are in a tidy format, so can be quickly manipulated using
-[dplyr](https://CRAN.R-project.org/package=dplyr) verbs. For example, to analyse
+[dplyr](https://CRAN.R-project.org/package=dplyr) verbs. For example, to analyze
 two years of personal robberies in Chicago and Detroit, you can run:
 
 ``` r

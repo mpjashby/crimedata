@@ -17,3 +17,9 @@ A tibble
 Get a tibble showing what years of crime data are available from which cities
 in the Open Crime Database.
 }
+\examples{
+\donttest{
+list_crime_data()
+}
+
+}

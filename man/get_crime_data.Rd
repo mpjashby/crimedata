@@ -64,7 +64,11 @@ Setting output = "sf" returns the data in simple features format by calling
 \examples{
 \donttest{
 # Retrieve a 1\% sample of data for specific years and cities
-get_crime_data(years = 2016:2017, cities = c("Tucson", "Virginia Beach"))
+get_crime_data(
+  years = 2016:2017,
+  cities = c("Tucson", "Virginia Beach"),
+  quiet = TRUE
+)
 }
 
 }

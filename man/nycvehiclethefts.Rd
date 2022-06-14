@@ -8,15 +8,19 @@
 A tibble with 35,746 rows and 13 variables:
 \describe{
   \item{uid}{an integer unique identifier for the offense}
-  \item{date_single}{date (and, in most cases, time) half-way between the first and last possible dates at which the offense could have occurred}
-  \item{date_start}{first possible date (and, in most cases, time) at which the offense could have occurred}
-  \item{date_send}{last possible date (and, in most cases, time) at which the offense could have occurred}
+  \item{date_single}{date (and, in most cases, time) half-way between the
+    first and last possible dates at which the offense could have occurred}
+  \item{date_start}{first possible date (and, in most cases, time) at which
+    the offense could have occurred}
+  \item{date_send}{last possible date (and, in most cases, time) at which the
+    offense could have occurred}
   \item{longitude}{approximate longitude}
   \item{latitude}{approximate latitude}
   \item{location_type}{type of location*}
   \item{location_category}{category of location type*}
   \item{fips_state}{two-digit FIPS state code (possibly with leading zero)}
-  \item{fips_county}{three-digit FIPS county code (possibly with leading zero)}
+  \item{fips_county}{three-digit FIPS county code (possibly with leading
+    zero)}
   \item{tract}{six-digit code for 2016 census tract}
   \item{block_group}{one-digit code for 2016 census block group}
   \item{block}{four-digit code for 2016 census block}

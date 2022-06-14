@@ -18,7 +18,8 @@ A tibble with 1,922 rows and 15 variables:
   \item{location_type}{type of location*}
   \item{location_category}{category of location type*}
   \item{fips_state}{two-digit FIPS state code (possibly with leading zero)}
-  \item{fips_county}{three-digit FIPS county code (possibly with leading zero)}
+  \item{fips_county}{three-digit FIPS county code (possibly with leading
+    zero)}
   \item{tract}{six-digit code for 2016 census tract}
   \item{block_group}{one-digit code for 2016 census block group}
   \item{block}{four-digit code for 2016 census block}

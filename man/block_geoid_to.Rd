@@ -36,7 +36,7 @@ corresponding state, county, tract or block group.
 }
 \details{
 For details of the format of US Census GEOIDs, see
-\url{https://www.census.gov/geo/reference/geoidentifiers.html}.
+\url{https://www.census.gov/programs-surveys/geography/guidance/geo-identifiers.html}.
 }
 \examples{
 block_geoid_to("360810443021005", to = "county", name = TRUE)
