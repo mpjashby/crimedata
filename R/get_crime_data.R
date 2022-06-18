@@ -266,7 +266,7 @@ get_crime_data <- function(
     crime_data,
     dplyr::vars(dplyr::one_of(c(
       "city_name", "offense_code", "offense_type", "offense_group",
-      "offense_against", "location_type", "location_category"
+      "offense_against"
     ))),
     as.factor
   )
@@ -275,14 +275,22 @@ get_crime_data <- function(
     dplyr::vars("date_single"),
     as.POSIXct, format = "%Y-%m-%d %H:%M"
   )
+  if (
+    "location_type" %in% names(crime_data) |
+    "location_category" %in% names(crime_data)
+  ) {
+    crime_data <- dplyr::mutate_at(
+      crime_data,
+      dplyr::vars(dplyr::one_of(c("location_type", "location_category"))),
+      as.factor
+    )
+  }
   if ("date_start" %in% names(crime_data) | "date_end" %in% names(crime_data)) {
-
     crime_data <- dplyr::mutate_at(
       crime_data,
       dplyr::vars(dplyr::one_of(c("date_start", "date_end"))),
       as.POSIXct, format = "%Y-%m-%d %H:%M"
     )
-
   }
 
   # return data

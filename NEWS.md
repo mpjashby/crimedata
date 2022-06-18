@@ -1,3 +1,9 @@
+# crimedata 0.3.1
+
+* Fixed an error with downloading some data for 2020 that was caused by a 
+  change in the OSF API used to query the data.
+
+
 # crimedata 0.3.0
 
 * Errors, warnings and messages are now generated using `rlang` to make them

@@ -37,7 +37,7 @@ obtained from the \href{https://osf.io/zyaqn/}{Crime Open Database}.
 }
 \details{
 More details of the data format are available on the
-\href{https://osf.io/zyaqn/wiki/}{Crime Open Database website}.
+\href{https://osf.io/zyaqn/wiki/home/}{Crime Open Database website}.
 Variables marked * are only available for some of the
 data, due to limitations in the data published by some cities.
 

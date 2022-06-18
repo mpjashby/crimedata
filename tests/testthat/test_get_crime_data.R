@@ -1,8 +1,8 @@
 context("Test function to get crime data")
 
 test_that("return value of get_crime_data is a tibble or SF object", {
-  expect_is(get_crime_data(years = 2019), "tbl_df")
-  expect_is(get_crime_data(years = 2019, output = "sf"), "sf")
+  expect_is(get_crime_data(), "tbl_df")
+  expect_is(get_crime_data(output = "sf"), "sf")
 })
 
 test_that("incorrect arguments produce errors", {
@@ -52,17 +52,17 @@ test_that("quiet execution does not return any messages", {
 test_that("data cache works as expected", {
 
   # get data, which should then be cached
-  get_crime_data(years = 2019, cities = "Detroit")
+  get_crime_data(cities = "Detroit")
 
   # request data again and check if it is retrieved from the cache
   expect_message(
-    get_crime_data(years = 2019, cities = "Detroit"),
+    get_crime_data(cities = "Detroit"),
     "Loading cached data"
   )
 
   # request data again, forcing download from server
   expect_message(
-    get_crime_data(years = 2019, cities = "Detroit", cache = FALSE),
+    get_crime_data(cities = "Detroit", cache = FALSE),
     "Deleting cached data"
   )
 })
