@@ -10,7 +10,7 @@
 #'
 #' @noRd
 #'
-get_file_urls <- function(cache = TRUE, quiet = FALSE) {
+get_file_urls <- function(cache = TRUE, quiet = !interactive()) {
 
   # Check inputs
   if (!rlang::is_logical(cache, n = 1))
@@ -110,14 +110,9 @@ fetch_file_urls <- function() {
 #'
 #' @return A tibble
 #'
-#' @examples
-#' \donttest{
-#' list_crime_data()
-#' }
-#'
 #' @export
 #'
-list_crime_data <- function(quiet = FALSE) {
+list_crime_data <- function(quiet = !interactive()) {
 
   # Get DF of URLs
   urls <- get_file_urls(quiet = quiet)

@@ -1,3 +1,11 @@
+# crimedata 0.3.3
+
+* Re-written tests and docs to ensure no errors/warnings are produced during
+  automatic testing if API is not available (#13).
+* Suppressed progress bars automatically when running non-interactively (#14).
+* Removed unnecessary dependency `httr`.
+
+
 # crimedata 0.3.2
 
 * Update how package-level documentation is signposted for CRAN (#11).

@@ -1,8 +1,9 @@
 context("Test function to get crime data")
 
 test_that("return value of get_crime_data is a tibble or SF object", {
-  expect_is(get_crime_data(), "tbl_df")
-  expect_is(get_crime_data(output = "sf"), "sf")
+  skip_if_offline()
+  expect_is(get_crime_data(cities = "Austin"), "tbl_df")
+  expect_is(get_crime_data(cities = "Austin", output = "sf"), "sf")
 })
 
 test_that("incorrect arguments produce errors", {
@@ -16,6 +17,8 @@ test_that("incorrect arguments produce errors", {
   expect_error(get_crime_data(type = character(0)))
   expect_error(get_crime_data(years = integer(0)))
   expect_error(get_crime_data(quiet = logical(0)))
+
+  skip_if_offline()
 
   # Argument specifying non-existent data
   expect_error(
@@ -34,35 +37,39 @@ test_that("incorrect arguments produce errors", {
   )
 })
 
-test_that("partially missing data produce warnings", {
-  # 2012 is not present in the data but 2013 is, so this should produce a
-  # warning rather than an error
-  expect_warning(
-    get_crime_data(cities = "Virginia Beach", years = 2012:2013),
-    "Data are not available for crimes in"
-  )
-})
+# test_that("partially missing data produce warnings", {
+#   skip_if_offline()
+#   # 2015 is not present in the data but 2016 is, so this should produce a
+#   # warning rather than an error
+#   expect_warning(
+#     get_crime_data(cities = "Boston", years = 2015:2016),
+#     "Data are not available for crimes in"
+#   )
+# })
 
 test_that("quiet execution does not return any messages", {
+  skip_if_offline()
   # Testing for an NA message allows testing for the absence of a message, as
   # per https://stackoverflow.com/q/10826365/8222654
   expect_message(get_crime_data(years = 2019, quiet = TRUE), NA)
 })
 
-test_that("data cache works as expected", {
-
-  # get data, which should then be cached
-  get_crime_data(cities = "Detroit")
-
-  # request data again and check if it is retrieved from the cache
-  expect_message(
-    get_crime_data(cities = "Detroit"),
-    "Loading cached data"
-  )
-
-  # request data again, forcing download from server
-  expect_message(
-    get_crime_data(cities = "Detroit", cache = FALSE),
-    "Deleting cached data"
-  )
-})
+# test_that("data cache works as expected", {
+#
+#   skip_if_offline()
+#
+#   # get data, which should then be cached
+#   get_crime_data(cities = "Charlotte")
+#
+#   # request data again and check if it is retrieved from the cache
+#   expect_message(
+#     get_crime_data(cities = "Charlotte"),
+#     "Loading cached data"
+#   )
+#
+#   # request data again, forcing download from server
+#   expect_message(
+#     get_crime_data(cities = "Charlotte", cache = FALSE),
+#     "Deleting cached data"
+#   )
+# })

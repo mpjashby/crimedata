@@ -3,7 +3,14 @@ title:  "crimedata"
 output: github_document
 ---
 
-
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/crimedata)](https://CRAN.R-project.org/package=crimedata)
@@ -42,10 +49,11 @@ Examples
 
 Data can be downloaded by year and by city. By default (i.e. if no arguments are specified) a 1% sample of data for all cities for the most recent available year is returned.
 
+```{r crimedata_setup, echo=FALSE}
+library(crimedata)
+```
 
-
-
-```r
+```{r crimedata_loading, eval=FALSE}
 library(crimedata)
 
 crime_data <- get_crime_data()
@@ -53,8 +61,7 @@ crime_data <- get_crime_data()
 
 The data are in a tidy format, so can be quickly manipulated using [dplyr](https://CRAN.R-project.org/package=dplyr) verbs. For example, to analyze two years of personal robberies in Chicago and Detroit, you can run:
 
-
-```r
+```{r crimedata_dplyr_example}
 suppressPackageStartupMessages(library(tidyverse))
 
 personal_robberies <- get_crime_data(
@@ -68,8 +75,7 @@ personal_robberies <- get_crime_data(
 
 You can alternatively get a [simple features (SF)](https://r-spatial.github.io/sf/articles/sf1.html) point object with the correct co-ordinates and co-ordinate reference system (CRS) specified by setting the argument `output = "sf"`. This can be used, for example, to quickly plot the data.
 
-
-```r
+```{r crimedata_sf_example, fig.asp=0.33, fig.retina=2}
 suppressPackageStartupMessages(library(lubridate))
 
 get_crime_data(
@@ -84,13 +90,7 @@ get_crime_data(
   ggplot() + 
   geom_sf() +
   facet_wrap(vars(offense_year), nrow = 1)
-#> Warning: Unknown columns: `location_type`
 ```
-
-<div class="figure">
-<img src="man/figures/README-crimedata_sf_example-1.png" alt="plot of chunk crimedata_sf_example" width="100%" />
-<p class="caption">plot of chunk crimedata_sf_example</p>
-</div>
 
 
 

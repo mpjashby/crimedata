@@ -12,3 +12,4 @@
 ^pkgdown$
 ^CRAN-SUBMISSION$
 ^\.github$
+^README.Rmd.orig$

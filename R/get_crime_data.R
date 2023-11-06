@@ -22,6 +22,9 @@
 #' Setting output = "sf" returns the data in simple features format by calling
 #' \code{\link[sf:st_as_sf]{sf::st_as_sf(..., crs = 4326, remove = FALSE)}}
 #'
+#' For more details see the help vignette:
+#' \code{vignette("introduction", package = "crimedata")}
+#'
 #' @param years A single integer or vector of integers specifying the years for
 #'   which data should be retrieved. If NULL (the default), data for the most
 #'   recent year will be returned.
@@ -38,24 +41,16 @@
 #'   specifying "sf"?
 #'
 #' @return A tibble containing data from the Open Crime Database.
+#'
 #' @export
 #'
-#' @examples
-#' \donttest{
-#' # Retrieve a 1% sample of data for specific years and cities
-#' get_crime_data(
-#'   years = 2016:2017,
-#'   cities = c("Tucson", "Virginia Beach"),
-#'   quiet = TRUE
-#' )
-#' }
 #'
 get_crime_data <- function(
   years = NULL,
   cities = NULL,
   type = "sample",
   cache = TRUE,
-  quiet = FALSE,
+  quiet = !interactive(),
   output = "tbl"
 ) {
 

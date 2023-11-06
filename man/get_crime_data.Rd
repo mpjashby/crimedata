@@ -9,7 +9,7 @@ get_crime_data(
   cities = NULL,
   type = "sample",
   cache = TRUE,
-  quiet = FALSE,
+  quiet = !interactive(),
   output = "tbl"
 )
 }
@@ -60,15 +60,7 @@ type = "sample") for exploratory analysis.
 
 Setting output = "sf" returns the data in simple features format by calling
 \code{\link[sf:st_as_sf]{sf::st_as_sf(..., crs = 4326, remove = FALSE)}}
-}
-\examples{
-\donttest{
-# Retrieve a 1\% sample of data for specific years and cities
-get_crime_data(
-  years = 2016:2017,
-  cities = c("Tucson", "Virginia Beach"),
-  quiet = TRUE
-)
-}
 
+For more details see the help vignette:
+\code{vignette("introduction", package = "crimedata")}
 }
