@@ -1,3 +1,8 @@
+# crimedata 0.3.2
+
+* Update how package-level documentation is signposted for CRAN (#11).
+
+
 # crimedata 0.3.1
 
 * Fixed an error with downloading some data for 2020 that was caused by a 

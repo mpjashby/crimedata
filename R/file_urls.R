@@ -73,78 +73,29 @@ get_file_urls <- function(cache = TRUE, quiet = FALSE) {
 #'
 fetch_file_urls <- function() {
 
-  # Retrieve data types separtely because there seems to be some undocumented
-  # limit on the number of files returned by each API call, even with pagination
-  urls <- c(
-    "https://api.osf.io/v2/nodes/zyaqn/files/osfstorage/5bbde32b7cb18100193c778a/?filter[name]=core",
-    "https://api.osf.io/v2/nodes/zyaqn/files/osfstorage/5bbde32b7cb18100193c778a/?filter[name]=extended",
-    "https://api.osf.io/v2/nodes/zyaqn/files/osfstorage/5bbde32b7cb18100193c778a/?filter[name]=sample"
+  # Download file details
+  files <- osfr::osf_ls_files(
+    osfr::osf_retrieve_node("https://osf.io/zyaqn"),
+    path = "Data for R package",
+    n_max = Inf
   )
 
-  json_values <- purrr::map(urls, function(x) {
+  # Extract file-name components
+  components <- stringr::str_match(
+    files$name,
+    "^crime_open_database_(core|extended|sample)_(.+)_(\\d+).Rds$"
+  )
 
-    page_url <- x
-
-    # Create an empty list to store result
-    values <- list()
-
-    while (!is.null(page_url)) {
-
-      # Get JSON data
-      json <- httr::content(
-        httr::stop_for_status(httr::GET(page_url)),
-        as = "parsed",
-        type = "application/json"
-      )
-
-      # Update the URL to the next page (or NULL if this is the last page)
-      page_url <- json$links[["next"]]
-
-      # Add results to existing object
-      values <- c(values, json$data)
-
-    }
-
-    # Return list of JSON objects
-    values
-
-  })
-
-  values <- purrr::map_dfr(json_values, function(x) {
-
-    purrr::map_dfr(x, function(y) {
-
-      # Parse the file name into type and year
-      file_name <- as.character(stringr::str_match(
-        y$attributes$name,
-        "^crime_open_database_(core|extended|sample)_(.+)_(\\d+).Rds$"
-      ))
-
-      # Extract city_name
-      city_name <- stringr::str_to_title(
-        stringr::str_replace_all(file_name[3], "_", " ")
-      )
-      if (city_name == "All") {
-        city_name <- "All cities"
-      }
-
-      # Return a list of data for this file
-      list(
-        data_type = file_name[2],
-        city = city_name,
-        year = file_name[4],
-        file_url = y$links$download
-      )
-
-    })
-
-  })
-
-  # convert year from character to integer
-  values$year <- as.integer(values$year)
+  # Add components
+  files$data_type <- components[, 2]
+  files$city <- stringr::str_to_title(
+    stringr::str_replace_all(components[, 3], "_", " ")
+  )
+  files$city <- ifelse(files$city == "All", "All cities", files$city)
+  files$year <- as.integer(components[, 4])
 
   # return tibble of links
-  values[order(values$data_type, values$city, values$year), ]
+  files[order(files$data_type, files$city, files$year), ]
 
 }
 

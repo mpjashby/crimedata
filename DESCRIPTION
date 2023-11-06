@@ -1,6 +1,6 @@
 Package: crimedata
 Title: Access Crime Data from the Open Crime Database
-Version: 0.3.1
+Version: 0.3.2
 Authors@R: person("Matthew", "Ashby", email = "matthew.ashby@ucl.ac.uk", 
     role = c("aut", "cre", "cph"), 
     comment = c(ORCID = "<https://orcid.org/0000-0003-4201-9239>"))
@@ -12,16 +12,16 @@ License: MIT + file LICENSE
 Language: en-US
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Suggests: 
     testthat,
-    covr,
     knitr,
     rmarkdown
 Imports: 
     digest,
     dplyr,
     httr,
+    osfr,
     purrr,
     rlang,
     sf,
