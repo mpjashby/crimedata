@@ -1,9 +1,9 @@
 Package: crimedata
 Title: Access Crime Data from the Open Crime Database
-Version: 0.3.3
+Version: 0.3.4
 Authors@R: person("Matthew", "Ashby", email = "matthew.ashby@ucl.ac.uk", 
     role = c("aut", "cre", "cph"), 
-    comment = c(ORCID = "<https://orcid.org/0000-0003-4201-9239>"))
+    comment = c(ORCID = "0000-0003-4201-9239"))
 Description: Gives convenient access to publicly available police-recorded open
     crime data from large cities in the United States that are included in the
     Crime Open Database <https://osf.io/zyaqn/>.

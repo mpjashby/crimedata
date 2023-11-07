@@ -48,6 +48,6 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Matthew Ashby \email{matthew.ashby@ucl.ac.uk} (\href{<https://orcid.org/0000-0003-4201-9239>}{ORCID}) [copyright holder]
+\strong{Maintainer}: Matthew Ashby \email{matthew.ashby@ucl.ac.uk} (\href{https://orcid.org/0000-0003-4201-9239}{ORCID}) [copyright holder]
 
 }

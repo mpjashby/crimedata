@@ -1,3 +1,8 @@
+# crimedata 0.3.4
+
+* Changed how ORCID is included in package DESCRIPTION file.
+
+
 # crimedata 0.3.3
 
 * Re-written tests and docs to ensure no errors/warnings are produced during
