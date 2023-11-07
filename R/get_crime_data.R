@@ -22,6 +22,9 @@
 #' Setting output = "sf" returns the data in simple features format by calling
 #' \code{\link[sf:st_as_sf]{sf::st_as_sf(..., crs = 4326, remove = FALSE)}}
 #'
+#' For more details see the help vignette:
+#' \code{vignette("introduction", package = "crimedata")}
+#'
 #' @param years A single integer or vector of integers specifying the years for
 #'   which data should be retrieved. If NULL (the default), data for the most
 #'   recent year will be returned.
@@ -38,24 +41,16 @@
 #'   specifying "sf"?
 #'
 #' @return A tibble containing data from the Open Crime Database.
+#'
 #' @export
 #'
-#' @examples
-#' \donttest{
-#' # Retrieve a 1% sample of data for specific years and cities
-#' get_crime_data(
-#'   years = 2016:2017,
-#'   cities = c("Tucson", "Virginia Beach"),
-#'   quiet = TRUE
-#' )
-#' }
 #'
 get_crime_data <- function(
   years = NULL,
   cities = NULL,
   type = "sample",
   cache = TRUE,
-  quiet = FALSE,
+  quiet = !interactive(),
   output = "tbl"
 ) {
 
@@ -74,9 +69,7 @@ get_crime_data <- function(
   urls$city <- tolower(urls$city)
 
   # If years are not specified, use the most recent available year
-  if (is.null(years)) {
-    years <- max(urls$year)
-  }
+  if (is.null(years)) years <- max(urls$year)
 
   # If cities are not specified, use all available cities
   if (is.null(cities)) {
@@ -109,7 +102,7 @@ get_crime_data <- function(
   }
 
   # check if all specified cities are available
-  if (cities[1] != "all" & !all(cities %in% unique(urls$city))) {
+  if (cities[1] != "all cities" & !all(cities %in% unique(urls$city))) {
     rlang::abort(
       c(
         "Data is not available for one or more of the specified cities.",
@@ -194,54 +187,29 @@ get_crime_data <- function(
 
   } else {
 
-    # Fetch data
-    # purrr::transpose() converts each row of the urls tibble into a list, which
-    # can then by processed by purrr::map()
-    crime_data <- purrr::map_dfr(
-      purrr::transpose(
-        urls,
-        .names = paste0(urls$data_type, urls$city, urls$year)
-      ),
-      function(x) {
+    # Create temporary directory
+    temp_dir <- stringr::str_glue("{tempdir()}/crime_data/")
+    if (!dir.exists(temp_dir)) dir.create(temp_dir)
 
-        # Report progress
-        if (quiet == FALSE) {
-          rlang::inform(stringr::str_glue(
-            "Downloading {x[['data_type']]} data for ",
-            "{stringr::str_to_title(x[['city']])} in {x[['year']]}"
-          ))
-        }
-
-        # Set name for temporary file
-        temp_file <- tempfile(pattern = "code_data_", fileext = ".Rds")
-
-        # Download remote file
-        if (quiet == TRUE) {
-          writeBin(
-            httr::content(httr::GET(x[["file_url"]]), as = "raw"),
-            temp_file
-          )
-        } else {
-          writeBin(
-            httr::content(
-              httr::GET(x[["file_url"]], httr::progress(type = "down")),
-              as = "raw"
-            ),
-            temp_file
-          )
-        }
-
-        # read file
-        this_crime_data <- readRDS(temp_file)
-
-        # remove temporary file
-        file.remove(temp_file)
-
-        # return data from file
-        this_crime_data
-
-      }
+    # Download files
+    osfr::osf_download(
+      urls,
+      path = temp_dir,
+      conflicts = "overwrite",
+      progress = !quiet
     )
+
+    # Load data
+    crime_data <- purrr::map_dfr(
+      dir(
+        path = temp_dir,
+        pattern = "^crime_open_database(.+?).Rds$",
+        full.names = TRUE
+      ),
+      readRDS
+    )
+
+    # Sort data
     crime_data <- crime_data[order(crime_data$uid), ]
 
     # Store data in cache

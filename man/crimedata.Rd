@@ -3,6 +3,7 @@
 \docType{package}
 \name{crimedata}
 \alias{crimedata}
+\alias{crimedata-package}
 \title{crimedata: a package for accessing US city crime data}
 \description{
 Access incident-level crime data from the Open Crime Database
@@ -37,3 +38,16 @@ Access incident-level crime data from the Open Crime Database
   used at one's own risk.
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://pkgs.lesscrime.info/crimedata/}
+  \item \url{https://github.com/mpjashby/crimedata}
+  \item Report bugs at \url{https://github.com/mpjashby/crimedata/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Matthew Ashby \email{matthew.ashby@ucl.ac.uk} (\href{https://orcid.org/0000-0003-4201-9239}{ORCID}) [copyright holder]
+
+}

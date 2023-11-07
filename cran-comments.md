@@ -1,13 +1,9 @@
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 1 warnings | 1 notes
 
-New submission
+This version deals with a CRAN check error resulting from an API being down, so that the relevant functions now degrade gracefully.
 
-Package was archived on CRAN
+The 1 warning is for a possibly invalid URL <https://orcid.org/0000-0003-4201-9239> that is actually valid.
 
-* This package was archived due to an out-of-date maintainer email address and
-  a problem with one of the tests of `get_crime_data()`. Both these issues have
-  been fixed.
-* win-builder gives an 'Invalid DOI' message for the DOI 
-  https://doi.org/10.1163/24523666-00401007 but this DOI is valid.
+The 1 note is for a possibly invalid URL https://doi.org/10.1163/24523666-00401007 that produces a 404 error when checked by RHub but resolves as expected in the browser.

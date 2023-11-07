@@ -98,9 +98,17 @@ get_crime_data(
   ggplot() + 
   geom_sf() +
   facet_wrap(vars(offense_year), nrow = 1)
+#> Warning: Unknown columns: `location_type`
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<div class="figure">
+
+<img src="man/figures/README-crimedata_sf_example-1.png" alt="plot of chunk crimedata_sf_example" width="100%" />
+<p class="caption">
+plot of chunk crimedata_sf_example
+</p>
+
+</div>
 
 ## Included data
 

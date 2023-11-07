@@ -1,3 +1,21 @@
+# crimedata 0.3.4
+
+* Changed how ORCID is included in package DESCRIPTION file.
+
+
+# crimedata 0.3.3
+
+* Re-written tests and docs to ensure no errors/warnings are produced during
+  automatic testing if API is not available (#13).
+* Suppressed progress bars automatically when running non-interactively (#14).
+* Removed unnecessary dependency `httr`.
+
+
+# crimedata 0.3.2
+
+* Update how package-level documentation is signposted for CRAN (#11).
+
+
 # crimedata 0.3.1
 
 * Fixed an error with downloading some data for 2020 that was caused by a 

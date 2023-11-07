@@ -26,6 +26,5 @@
 #'   at any time. It is understood that the data provided at this site is being
 #'   used at one's own risk.
 #'
-#' @docType package
 #' @name crimedata
-NULL
+"_PACKAGE"

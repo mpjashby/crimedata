@@ -4,7 +4,7 @@
 \alias{list_crime_data}
 \title{List Data Available in the Open Crime Database}
 \usage{
-list_crime_data(quiet = FALSE)
+list_crime_data(quiet = !interactive())
 }
 \arguments{
 \item{quiet}{Should messages and warnings relating to data availability and
@@ -16,10 +16,4 @@ A tibble
 \description{
 Get a tibble showing what years of crime data are available from which cities
 in the Open Crime Database.
-}
-\examples{
-\donttest{
-list_crime_data()
-}
-
 }
