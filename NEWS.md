@@ -1,3 +1,8 @@
+# crimedata 0.3.5
+
+* Changed how DOI is specified in CITATION file.
+
+
 # crimedata 0.3.4
 
 * Changed how ORCID is included in package DESCRIPTION file.
